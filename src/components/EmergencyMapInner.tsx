@@ -1,7 +1,17 @@
 import { useEffect } from "react";
-import { MapContainer, TileLayer, CircleMarker, Popup, useMap, Polygon } from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  CircleMarker,
+  Popup,
+  useMap,
+  Polygon,
+  Marker,
+} from "react-leaflet";
+import { divIcon } from "leaflet";
 import { incidents, priorityColor, priorityLabel } from "@/lib/incidents";
 import { statusColor, statusLabel, type IncidentStatus } from "@/lib/ops";
+import { facilities, type FacilityType } from "@/lib/facilities";
 import type { SimPost } from "@/lib/simulator";
 
 export interface MapProps {
@@ -43,6 +53,45 @@ const floodZones: [number, number][][] = [
     [22.985, 72.59],
   ],
 ];
+
+const hospitalIcon = divIcon({
+  className: "rescuai-facility-icon",
+  html: `<div style="
+    width: 26px; height: 26px; border-radius: 50%;
+    background: #0066cc; border: 2px solid #ffffff;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.45), 0 2px 6px rgba(0,0,0,0.5);
+  ">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z" fill="#ffffff"/>
+    </svg>
+  </div>`,
+  iconSize: [26, 26],
+  iconAnchor: [13, 13],
+  popupAnchor: [0, -16],
+});
+
+const shieldIcon = divIcon({
+  className: "rescuai-facility-icon",
+  html: `<div style="
+    width: 24px; height: 28px;
+    background: #ffffff; border: 2px solid #0066cc;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.35), 0 2px 6px rgba(0,0,0,0.5);
+    border-radius: 6px 6px 10px 10px;
+  ">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z" fill="#0066cc"/>
+    </svg>
+  </div>`,
+  iconSize: [24, 28],
+  iconAnchor: [12, 14],
+  popupAnchor: [0, -18],
+});
+
+function facilityIconFor(type: FacilityType) {
+  return type === "Hospital" ? hospitalIcon : shieldIcon;
+}
 
 export default function EmergencyMapClient({
   posts = [],
@@ -95,6 +144,44 @@ export default function EmergencyMapClient({
             </Popup>
           </Polygon>
         ))}
+
+      {/* Hospitals & Relief Centers */}
+      {facilities.map((f) => (
+        <Marker key={f.id} position={[f.lat, f.lng]} icon={facilityIconFor(f.type)}>
+          <Popup>
+            <div style={{ minWidth: 190, fontFamily: "monospace", fontSize: "11px" }}>
+              <div
+                style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
+              >
+                <strong>{f.name}</strong>
+                <span
+                  style={{
+                    color: "#2997ff",
+                    textTransform: "uppercase",
+                    fontSize: "9px",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {f.type}
+                </span>
+              </div>
+              <div
+                style={{
+                  marginTop: "6px",
+                  padding: "4px",
+                  background: "rgba(0, 102, 204, 0.12)",
+                  borderRadius: "4px",
+                  border: "1px solid rgba(0, 102, 204, 0.25)",
+                  fontSize: "10px",
+                }}
+              >
+                <span style={{ color: "#2997ff", fontWeight: "bold" }}>BEDS AVAILABLE: </span>
+                {f.bedsAvailable}
+              </div>
+            </div>
+          </Popup>
+        </Marker>
+      ))}
 
       {/* Verified City Incidents */}
       {incidents.map((i) => (

@@ -1,4 +1,18 @@
-import { Radio, Volume2, VolumeX, Pause, Play, ShieldAlert, Sparkles, MapPin, Loader2, WifiOff } from "lucide-react";
+import { useState } from "react";
+import {
+  Radio,
+  Volume2,
+  VolumeX,
+  Pause,
+  Play,
+  ShieldAlert,
+  Sparkles,
+  MapPin,
+  Loader2,
+  WifiOff,
+  Eye,
+  EyeOff,
+} from "lucide-react";
 import { useIngestionFeed, type IngestionFeed } from "@/hooks/useIngestionFeed";
 import { statusBadgeClass, statusLabel } from "@/lib/ops";
 import { aiCategoryBadgeClass, type AICategory } from "@/services/aiClassifier";
@@ -8,9 +22,9 @@ import { PriorityBadge } from "./PriorityBadge";
 
 /* Fallback category badge — button-pearl-capsule style on dark surface */
 const fallbackCategoryStyles: Record<Category, string> = {
-  Rescue:         "bg-destructive/10 text-destructive border border-destructive/25",
-  Medical:        "bg-[#0066cc]/10 text-[#2997ff] border border-[#0066cc]/25",
-  Supplies:       "bg-success/10 text-success border border-success/25",
+  Rescue: "bg-destructive/10 text-destructive border border-destructive/25",
+  Medical: "bg-[#0066cc]/10 text-[#2997ff] border border-[#0066cc]/25",
+  Supplies: "bg-success/10 text-success border border-success/25",
   Infrastructure: "bg-warning/10 text-warning border border-warning/25",
 };
 
@@ -29,12 +43,14 @@ export function LiveFeed({
   onSelect?: (id: string) => void;
 }) {
   const own = useIngestionFeed();
-  const { posts, live, setLive, sound, toggleSound, statusOf, selectedId, isClassifying } = feed ?? own;
+  const { posts, live, setLive, sound, toggleSound, statusOf, selectedId, isClassifying } =
+    feed ?? own;
+  const [hideUnverified, setHideUnverified] = useState(false);
+  const visiblePosts = hideUnverified ? posts.filter((p) => !p.fake) : posts;
 
   let isMeshMode = false;
   let meshNodeId = "LORA NODE #04";
   try {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     const mesh = useOfflineMesh();
     isMeshMode = mesh.isMeshMode;
     meshNodeId = mesh.meshNodeId;
@@ -52,7 +68,10 @@ export function LiveFeed({
       {/* Feed Header — sub-nav-frosted spec */}
       <div
         className="flex items-center justify-between rounded-t-[18px] border-b border-white/8 px-4 py-3"
-        style={{ backdropFilter: "saturate(180%) blur(20px)", background: "rgba(245,245,247,0.06)" }}
+        style={{
+          backdropFilter: "saturate(180%) blur(20px)",
+          background: "rgba(245,245,247,0.06)",
+        }}
       >
         <div className="flex items-center gap-2.5">
           {isMeshMode ? (
@@ -84,6 +103,35 @@ export function LiveFeed({
               >
                 <Sparkles className="size-2.5" /> AI Scored
               </span>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={hideUnverified}
+                aria-label="Hide unverified posts"
+                onClick={() => setHideUnverified((v) => !v)}
+                className="inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-white/12 bg-white/6 px-2 py-0.5 transition-colors hover:border-white/20"
+                style={{ fontSize: 10, fontWeight: 400, letterSpacing: "0.02em" }}
+              >
+                {hideUnverified ? (
+                  <EyeOff className="size-2.5 text-[#2997ff]" />
+                ) : (
+                  <Eye className="size-2.5 text-white/40" />
+                )}
+                <span className={hideUnverified ? "text-[#2997ff]" : "text-white/60"}>
+                  Hide Unverified
+                </span>
+                <span
+                  className={`relative inline-block h-3 w-5 rounded-full transition-colors ${
+                    hideUnverified ? "bg-[#0066cc]" : "bg-white/15"
+                  }`}
+                >
+                  <span
+                    className={`absolute top-1/2 -translate-y-1/2 size-2 rounded-full bg-white transition-all ${
+                      hideUnverified ? "left-2.5" : "left-0.5"
+                    }`}
+                  />
+                </span>
+              </button>
             </h2>
           </div>
         </div>
@@ -112,7 +160,9 @@ export function LiveFeed({
             className={`ml-1 flex items-center gap-1.5 ${live ? "text-success" : "text-white/30"}`}
             style={{ fontSize: 10, letterSpacing: "0.06em" }}
           >
-            <span className={`size-1.5 rounded-full ${live ? "animate-pulse bg-success" : "bg-white/20"}`} />
+            <span
+              className={`size-1.5 rounded-full ${live ? "animate-pulse bg-success" : "bg-white/20"}`}
+            />
             {live ? "Live" : "Paused"}
           </span>
         </div>
@@ -120,7 +170,7 @@ export function LiveFeed({
 
       {/* Feed List */}
       <div className="flex-1 divide-y divide-white/6 overflow-y-auto">
-        {posts.map((post, i) => {
+        {visiblePosts.map((post, i) => {
           const categoryName = post.aiCategory || post.category;
           const categoryStyle =
             post.aiCategory && aiCategoryBadgeClass[post.aiCategory as AICategory]
@@ -160,7 +210,12 @@ export function LiveFeed({
               {/* Body — 17px/400/1.47/−0.374px body spec */}
               <p
                 className="mt-1.5 text-white/80"
-                style={{ fontSize: 14, fontWeight: 400, lineHeight: 1.47, letterSpacing: "-0.224px" }}
+                style={{
+                  fontSize: 14,
+                  fontWeight: 400,
+                  lineHeight: 1.47,
+                  letterSpacing: "-0.224px",
+                }}
               >
                 {post.body}
               </p>
@@ -190,7 +245,12 @@ export function LiveFeed({
                 {/* Category badge — pearl capsule style */}
                 <span
                   className={`rounded-[11px] px-2.5 py-0.5 border ${categoryStyle}`}
-                  style={{ fontSize: 11, fontWeight: 600, letterSpacing: "-0.224px", lineHeight: 1.29 }}
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 600,
+                    letterSpacing: "-0.224px",
+                    lineHeight: 1.29,
+                  }}
                 >
                   {categoryName}
                 </span>
@@ -204,7 +264,12 @@ export function LiveFeed({
 
                 <span
                   className={`rounded-[11px] px-2.5 py-0.5 border ${statusBadgeClass[statusOf(post)]}`}
-                  style={{ fontSize: 11, fontWeight: 600, letterSpacing: "-0.224px", lineHeight: 1.29 }}
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 600,
+                    letterSpacing: "-0.224px",
+                    lineHeight: 1.29,
+                  }}
                 >
                   {statusLabel[statusOf(post)]}
                 </span>
@@ -224,12 +289,27 @@ export function LiveFeed({
                 className="mt-2 flex items-center justify-between text-white/30"
                 style={{ fontSize: 10, letterSpacing: "-0.08px", lineHeight: 1.3 }}
               >
-                <span>{post.source} · {post.id}</span>
+                <span>
+                  {post.source} · {post.id}
+                </span>
                 <span>{ago(post.receivedAt)} ago</span>
               </div>
             </button>
           );
         })}
+        {visiblePosts.length === 0 && (
+          <div className="px-4 py-8 text-center">
+            <p
+              className="text-white/40"
+              style={{ fontSize: 11, letterSpacing: "-0.12px", lineHeight: 1.4 }}
+            >
+              No verified posts in the live stream.
+            </p>
+            <p className="mt-1 text-white/25" style={{ fontSize: 10, letterSpacing: "-0.08px" }}>
+              Unverified signals are hidden.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

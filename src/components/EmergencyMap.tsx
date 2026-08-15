@@ -55,6 +55,23 @@ export function EmergencyMap(props: MapProps) {
             </div>
           ))}
         </div>
+        <div className="my-1.5 h-px bg-white/8" />
+        <p
+          className="mb-1 font-mono font-semibold uppercase text-white/40"
+          style={{ fontSize: 9, letterSpacing: "0.08em", lineHeight: 1 }}
+        >
+          [LEGEND_FACILITY]
+        </p>
+        <div className="flex flex-col gap-0.5">
+          <div className="flex items-center gap-2 font-mono text-[10px] text-white/70">
+            <span className="inline-block size-2.5 rounded-full border-2 border-white bg-[#0066cc]" />
+            Hospital
+          </div>
+          <div className="flex items-center gap-2 font-mono text-[10px] text-white/70">
+            <span className="inline-block h-2.5 w-2 rounded-sm border-2 border-[#0066cc] bg-white" />
+            Relief / Shelter
+          </div>
+        </div>
       </div>
 
       {/* Flood zone toggle — dark utility button top right */}
