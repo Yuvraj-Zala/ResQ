@@ -1,8 +1,23 @@
-import { Radio } from "lucide-react";
-import { feed } from "@/lib/incidents";
+import { Radio, Volume2, VolumeX, Pause, Play, ShieldAlert } from "lucide-react";
+import { useIngestionFeed } from "@/hooks/useIngestionFeed";
+import type { Category } from "@/lib/simulator";
 import { PriorityBadge } from "./PriorityBadge";
 
+const categoryStyles: Record<Category, string> = {
+  Rescue: "bg-destructive/12 text-destructive ring-destructive/25",
+  Medical: "bg-primary/12 text-primary ring-primary/25",
+  Supplies: "bg-success/12 text-success ring-success/25",
+  Infrastructure: "bg-warning/12 text-warning ring-warning/25",
+};
+
+function ago(ts: number) {
+  const s = Math.max(0, Math.round((Date.now() - ts) / 1000));
+  return s < 60 ? `${s}s` : `${Math.round(s / 60)}m`;
+}
+
 export function LiveFeed({ className = "" }: { className?: string }) {
+  const { posts, live, setLive, sound, toggleSound } = useIngestionFeed();
+
   return (
     <div className={`flex flex-col rounded-xl border border-border bg-card ${className}`}>
       <div className="flex items-center justify-between border-b border-border px-4 py-3">
@@ -10,24 +25,72 @@ export function LiveFeed({ className = "" }: { className?: string }) {
           <Radio className="size-4 text-primary" />
           <h2 className="text-sm font-semibold text-foreground">Incoming Signals</h2>
         </div>
-        <span className="flex items-center gap-1.5 text-[10px] uppercase tracking-widest text-success">
-          <span className="size-1.5 animate-pulse rounded-full bg-success" />
-          Live
-        </span>
+        <div className="flex items-center gap-1.5">
+          <button
+            onClick={toggleSound}
+            aria-pressed={sound}
+            aria-label={sound ? "Mute alert sound" : "Enable alert sound"}
+            className={`grid size-7 place-items-center rounded-md border transition-colors ${
+              sound
+                ? "border-primary/30 bg-primary/12 text-primary"
+                : "border-border text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            {sound ? <Volume2 className="size-3.5" /> : <VolumeX className="size-3.5" />}
+          </button>
+          <button
+            onClick={() => setLive(!live)}
+            aria-label={live ? "Pause ingestion" : "Resume ingestion"}
+            className="grid size-7 place-items-center rounded-md border border-border text-muted-foreground transition-colors hover:text-foreground"
+          >
+            {live ? <Pause className="size-3.5" /> : <Play className="size-3.5" />}
+          </button>
+          <span
+            className={`ml-1 flex items-center gap-1.5 text-[10px] uppercase tracking-widest ${
+              live ? "text-success" : "text-muted-foreground"
+            }`}
+          >
+            <span
+              className={`size-1.5 rounded-full ${live ? "animate-pulse bg-success" : "bg-muted-foreground"}`}
+            />
+            {live ? "Live" : "Paused"}
+          </span>
+        </div>
       </div>
 
       <div className="flex-1 divide-y divide-border overflow-y-auto">
-        {feed.map((post) => (
-          <article key={post.id} className="px-4 py-3 transition-colors hover:bg-accent/50">
+        {posts.map((post, i) => (
+          <article
+            key={post.id}
+            className={`px-4 py-3 transition-colors hover:bg-accent/50 ${
+              i === 0 ? "animate-in fade-in slide-in-from-top-2 duration-500 bg-accent/30" : ""
+            }`}
+          >
             <div className="flex items-center justify-between gap-2">
               <p className="truncate text-xs font-medium text-foreground">{post.handle}</p>
               <PriorityBadge priority={post.priority} />
             </div>
+
             <p className="mt-1.5 text-[13px] leading-relaxed text-muted-foreground">{post.body}</p>
-            <div className="mt-2 flex items-center gap-3 font-mono text-[10px] uppercase tracking-wider text-muted-foreground/70">
-              <span>{post.source}</span>
-              <span>{post.minutesAgo}m ago</span>
-              <span>conf {post.confidence}%</span>
+
+            <div className="mt-2 flex flex-wrap items-center gap-1.5">
+              <span
+                className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ring-1 ${categoryStyles[post.category]}`}
+              >
+                {post.category}
+              </span>
+              <span className="rounded-full bg-muted px-2 py-0.5 font-mono text-[10px] text-muted-foreground">
+                conf {post.confidence}%
+              </span>
+              {post.fake && (
+                <span className="inline-flex items-center gap-1 rounded-full bg-caution/12 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-caution ring-1 ring-caution/25">
+                  <ShieldAlert className="size-3" /> Unverified
+                </span>
+              )}
+            </div>
+
+            <div className="mt-2 font-mono text-[10px] uppercase tracking-wider text-muted-foreground/70">
+              {post.source} · {post.id} · {ago(post.receivedAt)} ago
             </div>
           </article>
         ))}
