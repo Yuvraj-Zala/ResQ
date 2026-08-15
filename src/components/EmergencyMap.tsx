@@ -1,7 +1,7 @@
 import { Suspense, lazy, useEffect, useState } from "react";
 import { priorityColor, priorityLabel, type Priority } from "@/lib/incidents";
 
-const MapClient = lazy(() => import("./EmergencyMap.client"));
+const MapClient = lazy(() => import("./EmergencyMapInner"));
 
 const legend: Priority[] = ["critical", "high", "moderate", "low"];
 
