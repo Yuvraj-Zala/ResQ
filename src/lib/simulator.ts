@@ -12,6 +12,8 @@ export interface SimPost {
   priority: Priority;
   fake: boolean;
   receivedAt: number;
+  lat: number;
+  lng: number;
 }
 
 interface RawPost {
@@ -94,10 +96,29 @@ export function classify(body: string): {
   return { category: best.category, confidence, priority, fake };
 }
 
+const coords: [number, number][] = [
+  [19.0760, 72.8777],
+  [19.0896, 72.8656],
+  [19.0330, 72.8570],
+  [19.1136, 72.8697],
+  [19.0176, 72.8562],
+  [19.1197, 72.9051],
+  [19.0500, 72.9000],
+  [19.0640, 72.8330],
+  [19.1010, 72.8880],
+  [19.0450, 72.8790],
+  [19.0820, 72.9120],
+  [19.1290, 72.8460],
+  [19.0230, 72.8410],
+  [19.0990, 72.8290],
+  [19.0680, 72.9210],
+];
+
 let counter = 0;
 
 export function makePost(index: number): SimPost {
   const raw = rawPosts[index % rawPosts.length]!;
+  const base = coords[index % coords.length]!;
   counter += 1;
   return {
     id: `SIG-${9100 + counter}`,
@@ -105,6 +126,8 @@ export function makePost(index: number): SimPost {
     source: raw.source,
     body: raw.body,
     receivedAt: Date.now(),
+    lat: base[0] + (Math.random() - 0.5) * 0.012,
+    lng: base[1] + (Math.random() - 0.5) * 0.012,
     ...classify(raw.body),
   };
 }
