@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { makePost, seedPosts, type SimPost } from "@/lib/simulator";
+import { makePost, makePostAsync, seedPosts, seedPostsAsync, LIVE_FEED_INTERVAL_MS, type SimPost } from "@/lib/simulator";
 import type { IncidentStatus } from "@/lib/ops";
+import { useDemoScenario } from "@/context/DemoScenarioContext";
 
 const SEED = 5;
 const MAX = 30;
-const INTERVAL_MS = 4000;
+const INTERVAL_MS = LIVE_FEED_INTERVAL_MS || 9000;
 
 function playAlert(priority: SimPost["priority"]) {
   try {
@@ -35,21 +36,75 @@ export function useIngestionFeed() {
   const [sound, setSound] = useState(false);
   const [statuses, setStatuses] = useState<Record<string, IncidentStatus>>({});
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [isClassifying, setIsClassifying] = useState(false);
   const indexRef = useRef(SEED);
   const soundRef = useRef(sound);
   soundRef.current = sound;
+  const isProcessingRef = useRef(false);
 
+  // Connect with demo scenario context
+  let demoContext: ReturnType<typeof useDemoScenario> | null = null;
+  try {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    demoContext = useDemoScenario();
+  } catch {
+    /* if used outside provider */
+  }
+
+  // Initial seed on mount
   useEffect(() => {
     setPosts(seedPosts(SEED));
+
+    let isMounted = true;
+    seedPostsAsync(SEED)
+      .then((aiPosts) => {
+        if (isMounted && aiPosts.length > 0) {
+          setPosts(aiPosts);
+        }
+      })
+      .catch(() => {});
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
+  // Sync injected scenario posts immediately when triggered
+  useEffect(() => {
+    if (demoContext?.injectedPosts && demoContext.injectedPosts.length > 0) {
+      const scenarioItems = demoContext.injectedPosts;
+      setPosts((prev) => {
+        const filtered = prev.filter((p) => !scenarioItems.some((s) => s.id === p.id));
+        return [...scenarioItems, ...filtered].slice(0, MAX);
+      });
+      setSelectedId(scenarioItems[0]?.id || null);
+    }
+  }, [demoContext?.injectedPosts]);
+
+  // Live ingestion stream with dynamic AI classification (1 post every 8-10s)
   useEffect(() => {
     if (!live) return;
-    const timer = setInterval(() => {
-      const post = makePost(indexRef.current++);
-      setPosts((prev) => [post, ...prev].slice(0, MAX));
-      if (soundRef.current) playAlert(post.priority);
+
+    const timer = setInterval(async () => {
+      if (isProcessingRef.current) return;
+      isProcessingRef.current = true;
+      setIsClassifying(true);
+
+      const nextIndex = indexRef.current++;
+      try {
+        const post = await makePostAsync(nextIndex);
+        setPosts((prev) => [post, ...prev].slice(0, MAX));
+        if (soundRef.current) playAlert(post.priority);
+      } catch {
+        const post = makePost(nextIndex);
+        setPosts((prev) => [post, ...prev].slice(0, MAX));
+        if (soundRef.current) playAlert(post.priority);
+      } finally {
+        isProcessingRef.current = false;
+        setIsClassifying(false);
+      }
     }, INTERVAL_MS);
+
     return () => clearInterval(timer);
   }, [live]);
 
@@ -80,6 +135,7 @@ export function useIngestionFeed() {
     setStatus,
     selectedId,
     setSelectedId,
+    isClassifying,
   };
 }
 

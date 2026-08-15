@@ -10,38 +10,56 @@ interface Props {
   tone: "destructive" | "warning" | "success" | "primary";
 }
 
-const tones = {
-  destructive: "text-destructive bg-destructive/10 ring-destructive/20",
-  warning: "text-warning bg-warning/10 ring-warning/20",
-  success: "text-success bg-success/10 ring-success/20",
-  primary: "text-primary bg-primary/10 ring-primary/20",
+const toneIcon: Record<Props["tone"], string> = {
+  primary:     "text-[#0066cc]",
+  destructive: "text-destructive",
+  warning:     "text-warning",
+  success:     "text-success",
+};
+
+const toneBg: Record<Props["tone"], string> = {
+  primary:     "bg-[#0066cc]/10",
+  destructive: "bg-destructive/10",
+  warning:     "bg-warning/10",
+  success:     "bg-success/10",
 };
 
 export function StatCard({ label, tag, value, delta, trend, icon: Icon, tone }: Props) {
   return (
-    <div className="relative rounded-sm border border-border bg-card p-3 transition-colors hover:border-primary/30">
-      {/* Corner accent - top left */}
-      <div className="pointer-events-none absolute left-0 top-0 size-3 border-l-2 border-t-2 border-primary/40" />
+    /* store-utility-card: surface-tile-1, hairline border, rounded-lg (18px), padding 24px */
+    <div className="rounded-[18px] border border-white/10 bg-[#272729] p-6 transition-colors hover:border-white/20">
       <div className="flex items-start justify-between">
         <div>
-          <p className="font-mono text-[8px] font-medium uppercase tracking-widest text-muted-foreground/70">
-            {tag}
-          </p>
-          <p className="mt-0.5 text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+          {/* fine-print label — 10px/400/−0.08px */}
+          <p
+            className="uppercase text-white/40"
+            style={{ fontSize: 10, fontWeight: 400, letterSpacing: "0.08em", lineHeight: 1.3 }}
+          >
             {label}
           </p>
         </div>
-        <span className={`grid size-7 place-items-center rounded-sm ring-1 ${tones[tone]}`}>
-          <Icon className="size-3.5" />
+        {/* Icon badge — circular chip, tone-colored */}
+        <span
+          className={`grid size-9 place-items-center rounded-full ${toneBg[tone]}`}
+        >
+          <Icon className={`size-4 ${toneIcon[tone]}`} />
         </span>
       </div>
-      <p className="mt-2.5 font-mono text-2xl font-semibold tabular-nums tracking-tight text-foreground">
+
+      {/* Value — display-md: 34px/600/−0.374px */}
+      <p
+        className="mt-4 tabular-nums text-white"
+        style={{ fontSize: 34, fontWeight: 600, lineHeight: 1.47, letterSpacing: "-0.374px" }}
+      >
         {value}
       </p>
+
+      {/* Delta — fine-print: 12px/400/−0.12px */}
       <p
-        className={`mt-1 text-[10px] font-medium ${
-          trend === "up" ? "text-destructive" : trend === "down" ? "text-success" : "text-muted-foreground"
+        className={`mt-1.5 ${
+          trend === "up" ? "text-destructive" : trend === "down" ? "text-success" : "text-white/40"
         }`}
+        style={{ fontSize: 12, fontWeight: 400, letterSpacing: "-0.12px", lineHeight: 1 }}
       >
         {delta}
       </p>

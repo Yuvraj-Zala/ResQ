@@ -21,23 +21,32 @@ export function AppSidebar() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   return (
-    <aside className="sticky top-0 hidden h-screen w-60 shrink-0 flex-col border-r border-border bg-sidebar md:flex">
-      <div className="relative flex items-center gap-2.5 border-b border-border px-4 py-4">
-        <div className="absolute left-0 top-0 size-3 border-l-2 border-t-2 border-primary/40" />
-        <div className="grid size-8 place-items-center rounded-sm bg-primary/10 ring-1 ring-primary/20">
-          <ShieldAlert className="size-4 text-primary" />
+    <aside className="sticky top-0 hidden h-screen w-56 shrink-0 flex-col border-r border-white/8 bg-black md:flex">
+      {/* Logo — global-nav spec: surface-black bg, on-dark text */}
+      <div className="flex items-center gap-2.5 border-b border-white/8 px-4 py-3" style={{ minHeight: 52 }}>
+        <div className="grid size-8 place-items-center rounded-lg bg-[#0066cc]">
+          <ShieldAlert className="size-4 text-white" />
         </div>
         <div>
-          <p className="text-xs font-semibold tracking-widest text-foreground">
-            RESCU<span className="text-primary">AI</span>
+          <p className="text-sm font-semibold tracking-tight text-white">
+            RESCU<span className="text-[#2997ff]">AI</span>
           </p>
-          <p className="text-[10px] text-muted-foreground">Disaster Intelligence</p>
+          <p
+            className="text-white/50"
+            style={{ fontSize: 10, letterSpacing: "-0.08px", lineHeight: 1.3 }}
+          >
+            Disaster Intelligence
+          </p>
         </div>
       </div>
 
-      <nav className="flex-1 space-y-0.5 px-2 py-3">
-        <p className="px-3 pb-1.5 font-mono text-[8px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/70">
-          [NAV_OPERATIONS]
+      {/* Nav — nav-link spec: 12px/400/−0.12px */}
+      <nav className="flex-1 px-2 py-4 space-y-0.5">
+        <p
+          className="px-3 pb-2 uppercase text-white/30"
+          style={{ fontSize: 10, fontWeight: 400, letterSpacing: "0.12em", lineHeight: 1 }}
+        >
+          Operations
         </p>
         {items.map((item) => {
           const active = pathname === item.url;
@@ -45,33 +54,38 @@ export function AppSidebar() {
             <Link
               key={item.url}
               to={item.url}
-              className={`flex items-center gap-2.5 rounded-sm px-3 py-2 text-[13px] transition-colors ${
+              className={`flex items-center gap-2.5 rounded-sm px-3 py-2 transition-colors ${
                 active
-                  ? "bg-primary/10 text-foreground ring-1 ring-inset ring-primary/20"
-                  : "text-muted-foreground hover:bg-accent hover:text-foreground"
+                  ? "text-[#2997ff]"           /* Sky Link Blue on dark surface */
+                  : "text-white/60 hover:text-white hover:bg-white/5"
               }`}
+              style={{ fontSize: 12, fontWeight: 400, letterSpacing: "-0.12px", lineHeight: 1 }}
             >
-              <item.icon className={`size-3.5 ${active ? "text-primary" : ""}`} />
-              <span className="font-medium">{item.title}</span>
+              <item.icon className={`size-3.5 ${active ? "text-[#2997ff]" : "text-white/40"}`} />
+              <span>{item.title}</span>
             </Link>
           );
         })}
       </nav>
 
-      <div className="relative m-2 rounded-sm border border-border bg-card p-3">
-        <div className="absolute left-0 top-0 size-3 border-l-2 border-t-2 border-destructive/40" />
-        <div className="flex items-center gap-2">
-          <Waves className="size-3.5 text-destructive" />
-          <p className="text-[11px] font-semibold text-foreground">Regional Status</p>
+      {/* Regional Status card — store-utility-card spec */}
+      <div
+        className="m-3 rounded-[18px] border border-white/8 bg-[#272729] p-4"
+      >
+        <div className="flex items-center gap-1.5 mb-2">
+          <Waves className="size-3 text-destructive" />
+          <p className="text-white" style={{ fontSize: 12, fontWeight: 600, letterSpacing: "-0.12px" }}>
+            Regional Status
+          </p>
         </div>
-        <p className="mt-1.5 text-[10px] leading-relaxed text-muted-foreground">
+        <p className="text-[#cccccc]" style={{ fontSize: 12, fontWeight: 400, lineHeight: 1.43, letterSpacing: "-0.12px" }}>
           Monsoon surge active. 3 wards under evacuation advisory near Sabarmati basin.
         </p>
-        <div className="mt-2.5 h-1 w-full overflow-hidden rounded-sm bg-muted">
-          <div className="h-full w-[72%] rounded-sm bg-destructive" />
+        <div className="mt-3 h-1 w-full overflow-hidden rounded-full bg-white/10">
+          <div className="h-full w-[72%] rounded-full bg-destructive" />
         </div>
-        <p className="mt-1.5 font-mono text-[8px] uppercase tracking-widest text-muted-foreground">
-          [SYS_LOAD] 72%
+        <p className="mt-2 text-white/40" style={{ fontSize: 10, letterSpacing: "0.04em" }}>
+          SYS_LOAD · 72%
         </p>
       </div>
     </aside>

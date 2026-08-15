@@ -14,12 +14,8 @@ export function EmergencyMap(props: MapProps) {
   useEffect(() => setMounted(true), []);
 
   return (
-    <div className="relative h-[420px] overflow-hidden rounded-sm border border-border bg-muted/40 lg:h-[520px]">
-      {/* Corner accent - top left */}
-      <div className="pointer-events-none absolute left-0 top-0 z-[500] size-4 border-l-2 border-t-2 border-primary/50" />
-      {/* Corner accent - bottom right */}
-      <div className="pointer-events-none absolute bottom-0 right-0 z-[500] size-4 border-b-2 border-r-2 border-primary/50" />
-
+    /* store-utility-card spec: tile-1, hairline border, rounded-lg (18px) */
+    <div className="relative h-[420px] overflow-hidden rounded-[18px] border border-white/10 bg-[#272729] lg:h-[520px]">
       {mounted ? (
         <Suspense fallback={<MapSkeleton />}>
           <MapClient {...props} showFloodZones={showFloodZones} />
@@ -28,29 +24,32 @@ export function EmergencyMap(props: MapProps) {
         <MapSkeleton />
       )}
 
-      {/* Tactical legend - bottom left */}
-      <div className="pointer-events-none absolute bottom-3 left-3 z-[500] rounded-sm border border-border bg-card/95 px-3 py-2 backdrop-blur">
-        <p className="mb-1.5 font-mono text-[8px] font-semibold uppercase tracking-widest text-muted-foreground">
+      {/* Tactical legend — utility card bottom left */}
+      <div className="pointer-events-none absolute bottom-3 left-3 z-[500] rounded-[11px] border border-white/10 bg-[#272729]/95 px-3 py-2 backdrop-blur">
+        <p
+          className="mb-1.5 font-mono font-semibold uppercase text-white/40"
+          style={{ fontSize: 9, letterSpacing: "0.08em", lineHeight: 1 }}
+        >
           [LEGEND_PRIORITY]
         </p>
         <div className="flex flex-col gap-0.5">
           {legend.map((p) => (
-            <div key={p} className="flex items-center gap-2 font-mono text-[10px] text-foreground">
-              <span
-                className="size-2 rounded-full"
-                style={{ backgroundColor: priorityColor[p] }}
-              />
+            <div key={p} className="flex items-center gap-2 font-mono text-[10px] text-white/70">
+              <span className="size-2 rounded-full" style={{ backgroundColor: priorityColor[p] }} />
               {priorityLabel[p]}
             </div>
           ))}
         </div>
-        <div className="my-1.5 h-px bg-border" />
-        <p className="mb-1 font-mono text-[8px] font-semibold uppercase tracking-widest text-muted-foreground">
+        <div className="my-1.5 h-px bg-white/8" />
+        <p
+          className="mb-1 font-mono font-semibold uppercase text-white/40"
+          style={{ fontSize: 9, letterSpacing: "0.08em", lineHeight: 1 }}
+        >
           [LEGEND_STATUS]
         </p>
         <div className="flex flex-col gap-0.5">
           {(["rescue", "medical", "resolved", "spam"] as const).map((s) => (
-            <div key={s} className="flex items-center gap-2 font-mono text-[10px] text-foreground">
+            <div key={s} className="flex items-center gap-2 font-mono text-[10px] text-white/70">
               <span className="size-2 rounded-full" style={{ backgroundColor: statusColor[s] }} />
               {statusLabel[s]}
             </div>
@@ -58,18 +57,18 @@ export function EmergencyMap(props: MapProps) {
         </div>
       </div>
 
-      {/* Flood zone toggle - top right */}
+      {/* Flood zone toggle — dark utility button top right */}
       <button
         onClick={() => setShowFloodZones((v) => !v)}
-        className={`absolute right-3 top-3 z-[500] flex items-center gap-1.5 rounded-sm border px-2.5 py-1.5 font-mono text-[9px] uppercase tracking-widest transition-colors ${
+        className={`absolute right-3 top-3 z-[500] flex items-center gap-1.5 rounded-[8px] border px-2.5 py-1.5 font-mono text-[9px] uppercase tracking-widest transition-colors cursor-pointer ${
           showFloodZones
-            ? "border-blue-500/40 bg-blue-500/15 text-blue-400"
-            : "border-border bg-card/90 text-muted-foreground hover:text-foreground"
+            ? "border-[#0066cc]/40 bg-[#0066cc]/15 text-[#2997ff]"
+            : "border-white/10 bg-[#272729]/90 text-white/50 hover:text-white"
         }`}
       >
         <Waves className="size-3" />
         Flood Risk Zones
-        {showFloodZones && <span className="size-1.5 animate-pulse rounded-full bg-blue-400" />}
+        {showFloodZones && <span className="size-1.5 animate-pulse rounded-full bg-[#2997ff]" />}
       </button>
     </div>
   );
@@ -77,7 +76,7 @@ export function EmergencyMap(props: MapProps) {
 
 function MapSkeleton() {
   return (
-    <div className="grid h-full w-full place-items-center font-mono text-xs text-muted-foreground">
+    <div className="grid h-full w-full place-items-center font-mono text-xs text-white/40">
       [INIT_MAP] Loading tactical map...
     </div>
   );

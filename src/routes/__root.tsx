@@ -8,8 +8,14 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
-import { OctagonAlert as AlertOctagon, ShieldHalf, Activity } from "lucide-react";
+import { OctagonAlert as AlertOctagon, ShieldHalf, FileText } from "lucide-react";
 import { AppSidebar } from "@/components/AppSidebar";
+import { generateAndDownloadSitrep } from "@/services/sitrepExporter";
+import { DemoScenarioProvider, useDemoScenario } from "@/context/DemoScenarioContext";
+import { OfflineMeshProvider } from "@/context/OfflineMeshContext";
+import { DemoPresetsControl } from "@/components/DemoPresetsControl";
+import { MeshModeToggle } from "@/components/MeshModeToggle";
+import { Toaster } from "@/components/ui/sonner";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -26,7 +32,7 @@ function NotFoundComponent() {
         <div className="mt-6">
           <Link
             to="/"
-            className="inline-flex items-center justify-center rounded-sm bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            className="inline-flex items-center justify-center rounded-full bg-[#0066cc] px-5 py-2 text-sm font-medium text-white transition-all hover:bg-[#0071e3] active:scale-95"
           >
             Go home
           </Link>
@@ -58,13 +64,13 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
               router.invalidate();
               reset();
             }}
-            className="inline-flex items-center justify-center rounded-sm bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            className="inline-flex items-center justify-center rounded-full bg-[#0066cc] px-5 py-2 text-sm font-medium text-white transition-all hover:bg-[#0071e3] active:scale-95"
           >
             Try again
           </button>
           <a
             href="/"
-            className="inline-flex items-center justify-center rounded-sm border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
+            className="inline-flex items-center justify-center rounded-full border border-white/15 bg-[#272729] px-5 py-2 text-sm font-medium text-white/80 transition-colors hover:bg-white/5"
           >
             Go home
           </a>
@@ -151,64 +157,123 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
-  const istTime = useISTClock();
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="flex min-h-screen w-full bg-background font-sans text-foreground">
-        <AppSidebar />
-        <div className="flex min-w-0 flex-1 flex-col">
-          {/* Tactical telemetry strip */}
-          <div className="flex items-center gap-3 border-b border-border bg-zinc-950 px-4 py-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-            {/* Agency emblem */}
-            <span className="flex items-center gap-1.5 text-foreground">
-              <ShieldHalf className="size-3.5 text-primary" />
-              GSDMA / NDRF UNIT 6
+      <OfflineMeshProvider>
+        <DemoScenarioProvider>
+          <RootLayoutInner />
+        </DemoScenarioProvider>
+      </OfflineMeshProvider>
+    </QueryClientProvider>
+  );
+}
+
+function RootLayoutInner() {
+  const istTime = useISTClock();
+  const [isExporting, setIsExporting] = useState(false);
+  const { sector, activationLevel, stats } = useDemoScenario();
+
+  const handleExportSitrep = () => {
+    setIsExporting(true);
+    try {
+      generateAndDownloadSitrep({
+        activeAlerts: stats.activeAlerts,
+        highPriorityRescues: stats.highPriorityRescues,
+        resolvedCases: stats.resolvedToday,
+        connectedSources: stats.connectedSources,
+        operatorId: "NDRF-#4092",
+        sector: sector.replace(/^SECTOR:\s*/, ""),
+      });
+    } catch {
+      /* silent fallback */
+    } finally {
+      setTimeout(() => setIsExporting(false), 800);
+    }
+  };
+
+  return (
+    <div className="flex min-h-screen w-full bg-background font-sans text-foreground">
+      <AppSidebar />
+      <div className="flex min-w-0 flex-1 flex-col">
+        {/* Tactical telemetry strip — global-nav spec: surface-black, on-dark */}
+        <div className="flex items-center gap-3 border-b border-white/8 bg-black px-4 py-1.5 font-mono text-[10px] uppercase tracking-widest text-white/40 overflow-x-auto">
+          {/* Agency emblem */}
+          <span className="flex items-center gap-1.5 text-foreground shrink-0">
+            <ShieldHalf className="size-3.5 text-primary" />
+            GSDMA / NDRF UNIT 6
+          </span>
+          <span className="text-border">|</span>
+          <span className="flex items-center gap-1.5 text-success shrink-0">
+            <span className="size-1.5 animate-pulse rounded-full bg-success" />
+            SYSTEM STATUS: ACTIVE
+          </span>
+          <span className="text-border">|</span>
+          <span className="shrink-0">OPERATOR ID: NDRF-#4092</span>
+          <span className="text-border">|</span>
+          <span className="shrink-0 font-medium text-[#2997ff]">{sector}</span>
+
+          {/* Right side: Mesh Mode, Latency, clock, alert */}
+          <span className="ml-auto flex items-center gap-3 shrink-0">
+            <MeshModeToggle />
+            <span className="text-border hidden sm:inline">|</span>
+            <span className="text-foreground hidden sm:inline">IST {istTime}</span>
+            <span className="text-border hidden sm:inline">|</span>
+            <span className="hidden sm:flex items-center gap-1 text-destructive">
+              <AlertOctagon className="size-3" /> {activationLevel}
             </span>
-            <span className="text-border">|</span>
-            <span className="flex items-center gap-1.5 text-success">
-              <span className="size-1.5 animate-pulse rounded-full bg-success" />
-              SYSTEM STATUS: ACTIVE
-            </span>
-            <span className="text-border">|</span>
-            <span>OPERATOR ID: NDRF-#4092</span>
-            <span className="text-border">|</span>
-            <span>SECTOR: AHMEDABAD CENTRAL</span>
-            {/* Right side: latency, clock, alert */}
-            <span className="ml-auto hidden items-center gap-3 sm:flex">
-              <span className="flex items-center gap-1 text-success">
-                <Activity className="size-3" />
-                LATENCY: 24ms
-              </span>
-              <span className="text-border">|</span>
-              <span className="text-foreground">IST {istTime}</span>
-              <span className="text-border">|</span>
-              <span className="flex items-center gap-1 text-destructive">
-                <AlertOctagon className="size-3" /> LEVEL 3 ACTIVATION
-              </span>
+          </span>
+        </div>
+
+        <header
+          className="sticky top-0 z-[600] flex items-center justify-between gap-4 border-b border-white/8 px-4 py-2.5"
+          style={{
+            backdropFilter: "saturate(180%) blur(20px)",
+            background: "rgba(245,245,247,0.06)",
+          }}
+        >
+          <div>
+            <h1
+              className="text-white"
+              style={{ fontSize: 15, fontWeight: 600, letterSpacing: "-0.374px", lineHeight: 1.29 }}
+            >
+              Disaster Intelligence &amp; Response Support
+            </h1>
+            <p className="font-mono text-[10px] text-white/40">
+              Command Console · Ahmedabad Central · Real-time Operations
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2">
+            {/* Demo Presets Control Panel */}
+            <DemoPresetsControl />
+
+            {/* SITREP Export Button — button-primary pill */}
+            <button
+              type="button"
+              onClick={handleExportSitrep}
+              disabled={isExporting}
+              className="inline-flex cursor-pointer items-center gap-1.5 rounded-full bg-[#0066cc] px-3.5 py-1.5 font-medium text-white transition-all hover:bg-[#0071e3] active:scale-95 disabled:opacity-50"
+              style={{ fontSize: 12, letterSpacing: "-0.12px", lineHeight: 1 }}
+              title="Export GSDMA Official Situation Report PDF"
+            >
+              <FileText className="size-3.5" />
+              <span>{isExporting ? "GENERATING..." : "EXPORT SITREP"}</span>
+            </button>
+
+            <span className="grid size-7 place-items-center rounded-[8px] border border-white/10 bg-[#252527] font-mono text-[10px] text-white">
+              OP
             </span>
           </div>
-          <header className="sticky top-0 z-[600] flex items-center justify-between gap-4 border-b border-border bg-background/90 px-4 py-2.5 backdrop-blur">
-            <div>
-              <h1 className="text-sm font-semibold tracking-tight text-foreground">
-                Disaster Intelligence &amp; Response Support
-              </h1>
-              <p className="font-mono text-[10px] text-muted-foreground">
-                Command Console · Ahmedabad Central · Real-time Operations
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="grid size-7 place-items-center rounded-sm bg-secondary font-mono text-[10px] text-foreground">
-                OP
-              </span>
-            </div>
-          </header>
-          <main className="flex-1 p-4">
-            {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-            <Outlet />
-          </main>
-        </div>
+        </header>
+
+        <main className="flex-1 p-4">
+          {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+          <Outlet />
+        </main>
       </div>
-    </QueryClientProvider>
+
+      <Toaster position="bottom-right" />
+    </div>
   );
 }

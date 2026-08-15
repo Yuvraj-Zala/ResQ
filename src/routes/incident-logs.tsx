@@ -6,7 +6,10 @@ export const Route = createFileRoute("/incident-logs")({
   head: () => ({
     meta: [
       { title: "Incident Logs — RescuAI" },
-      { name: "description", content: "Chronological log of reported incidents, districts and affected populations." },
+      {
+        name: "description",
+        content: "Chronological log of reported incidents, districts and affected populations.",
+      },
       { property: "og:title", content: "Incident Logs — RescuAI" },
       { property: "og:description", content: "Auditable record of every reported incident." },
     ],
@@ -16,27 +19,34 @@ export const Route = createFileRoute("/incident-logs")({
 
 function Logs() {
   return (
-    <div className="overflow-hidden rounded-sm border border-border bg-card">
+    <div className="overflow-hidden rounded-[18px] border border-white/10 bg-[#272729]">
       <table className="w-full text-[13px]">
         <thead>
-          <tr className="border-b border-border text-left font-mono text-[9px] uppercase tracking-widest text-muted-foreground">
-            <th className="px-3 py-2.5 font-medium">ID</th>
-            <th className="px-3 py-2.5 font-medium">Incident</th>
-            <th className="hidden px-3 py-2.5 font-medium sm:table-cell">Type</th>
-            <th className="hidden px-3 py-2.5 font-medium md:table-cell">District</th>
-            <th className="px-3 py-2.5 font-medium">Priority</th>
-            <th className="px-3 py-2.5 text-right font-medium">Age</th>
+          <tr
+            className="border-b border-white/8 text-left font-mono uppercase text-white/40"
+            style={{ fontSize: 9, letterSpacing: "0.08em" }}
+          >
+            <th className="px-4 py-3 font-medium">ID</th>
+            <th className="px-4 py-3 font-medium">Incident</th>
+            <th className="hidden px-4 py-3 font-medium sm:table-cell">Type</th>
+            <th className="hidden px-4 py-3 font-medium md:table-cell">District</th>
+            <th className="px-4 py-3 font-medium">Priority</th>
+            <th className="px-4 py-3 text-right font-medium">Age</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-border">
+        <tbody className="divide-y divide-white/6">
           {incidents.map((i) => (
-            <tr key={i.id} className="transition-colors hover:bg-accent/50">
-              <td className="px-3 py-2.5 font-mono text-[10px] text-muted-foreground">{i.id}</td>
-              <td className="px-3 py-2.5 text-foreground">{i.title}</td>
-              <td className="hidden px-3 py-2.5 text-muted-foreground sm:table-cell">{i.type}</td>
-              <td className="hidden px-3 py-2.5 text-muted-foreground md:table-cell">{i.district}</td>
-              <td className="px-3 py-2.5"><PriorityBadge priority={i.priority} /></td>
-              <td className="px-3 py-2.5 text-right font-mono text-[11px] text-muted-foreground">{i.minutesAgo}m</td>
+            <tr key={i.id} className="transition-colors hover:bg-white/4">
+              <td className="px-4 py-3 font-mono text-[10px] text-white/40">{i.id}</td>
+              <td className="px-4 py-3 text-white/85">{i.title}</td>
+              <td className="hidden px-4 py-3 text-white/50 sm:table-cell">{i.type}</td>
+              <td className="hidden px-4 py-3 text-white/50 md:table-cell">{i.district}</td>
+              <td className="px-4 py-3">
+                <PriorityBadge priority={i.priority} />
+              </td>
+              <td className="px-4 py-3 text-right font-mono text-[11px] text-white/40">
+                {i.minutesAgo}m
+              </td>
             </tr>
           ))}
         </tbody>

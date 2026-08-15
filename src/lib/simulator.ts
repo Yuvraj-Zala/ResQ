@@ -1,6 +1,17 @@
 import type { Priority } from "./incidents";
+import {
+  classifyDisasterPost,
+  mockClassifyDisasterPost,
+  mapAICategoryToLegacy,
+  mapAISeverityToPriority,
+  type AICategory,
+  type AISeverity,
+  type DisasterClassification,
+} from "@/services/aiClassifier";
 
 export type Category = "Rescue" | "Medical" | "Supplies" | "Infrastructure";
+
+export const LIVE_FEED_INTERVAL_MS = 9000; // 9 seconds (1 new post every 8 to 10s)
 
 export interface SimPost {
   id: string;
@@ -8,129 +19,152 @@ export interface SimPost {
   source: "X" | "Emergency Line" | "Field Radio" | "Citizen App" | "Sensor Grid";
   body: string;
   category: Category;
+  aiCategory?: AICategory;
   confidence: number;
   priority: Priority;
+  severity?: AISeverity;
   fake: boolean;
   receivedAt: number;
   lat: number;
   lng: number;
+  locationDetected?: string;
+  recommendedAction?: string;
+  aiClassification?: DisasterClassification;
+  isAiClassified?: boolean;
 }
 
-interface RawPost {
+export interface RawPost {
   handle: string;
   source: SimPost["source"];
   body: string;
 }
 
 export const rawPosts: RawPost[] = [
-  { handle: "@amdavadi_raj", source: "X", body: "Trapped on 2nd floor near Sabarmati Riverfront, water rising fast!" },
-  { handle: "shelter_ops", source: "Citizen App", body: "Need food packets at Satellite shelter, around 200 people from Bopal." },
-  { handle: "Unit 09", source: "Field Radio", body: "Road blocked by fallen tree on SG Highway near ISCON, convoy rerouting via Ring Road." },
-  { handle: "Call 5522", source: "Emergency Line", body: "Elderly man unconscious near Maninagar station, breathing shallow, needs ambulance." },
-  { handle: "@relief_rita", source: "X", body: "Family of five stuck on rooftop behind the old mill in Paldi, send boat." },
-  { handle: "clinic_north", source: "Citizen App", body: "Out of insulin and saline at Navrangpura clinic, urgent resupply required." },
-  { handle: "Node SBR-14", source: "Sensor Grid", body: "Sabarmati bridge strain sensors exceeding safe limits, closure recommended." },
-  { handle: "@viral_alerts", source: "X", body: "BREAKING: Narmada dam has collapsed, millions dead, government hiding it!!" },
-  { handle: "Unit 21", source: "Field Radio", body: "Two children separated from parents at Maninagar evacuation point, need pickup." },
-  { handle: "@ward_help", source: "X", body: "Drinking water tankers have not arrived in Vasna ward for two days." },
-  { handle: "Call 5530", source: "Emergency Line", body: "Woman in labour, cannot reach hospital, roads flooded near Paldi crossing." },
-  { handle: "@fastnews_now", source: "X", body: "FORWARDED: army says leave Ahmedabad tonight or you will be arrested, share fast" },
-  { handle: "Node PWR-03", source: "Sensor Grid", body: "Substation offline near Bopal, 6 blocks without power, generator dispatch advised." },
-  { handle: "volunteer_sam", source: "Citizen App", body: "Blankets and dry rations needed at SG Highway community hall before nightfall." },
-  { handle: "Unit 33", source: "Field Radio", body: "Partial wall collapse on Satellite approach road, one person pinned under debris." },
+  { handle: "@amdavadi_raj", source: "X", body: "Trapped on 2nd floor near Sabarmati Riverfront, water rising fast! Need rescue boat ASAP!" },
+  { handle: "shelter_ops", source: "Citizen App", body: "Need food packets and clean drinking water at Satellite shelter, around 200 people evacuated from Bopal." },
+  { handle: "Unit 09", source: "Field Radio", body: "Road completely blocked by fallen tree on SG Highway near ISCON mega-mall, convoy rerouting via Ring Road." },
+  { handle: "Call 5522", source: "Emergency Line", body: "Elderly man unconscious near Maninagar railway station, breathing shallow, needs urgent ambulance." },
+  { handle: "@relief_rita", source: "X", body: "Family of five stuck on rooftop behind the old mill in Paldi, send rescue boat immediately." },
+  { handle: "clinic_north", source: "Citizen App", body: "Out of insulin and saline at Navrangpura clinic, urgent medical resupply required before night." },
+  { handle: "Node SBR-14", source: "Sensor Grid", body: "Sabarmati bridge strain sensors exceeding safe limits, river water level high, closure recommended." },
+  { handle: "@viral_alerts", source: "X", body: "BREAKING: Narmada dam has collapsed, millions dead, government hiding it, share fast before deleted!!" },
+  { handle: "Unit 21", source: "Field Radio", body: "Two children separated from parents at Maninagar evacuation point, immediate rescue pickup needed." },
+  { handle: "@ward_help", source: "X", body: "Drinking water tankers have not arrived in Vasna ward for two days, residents desperate." },
+  { handle: "Call 5530", source: "Emergency Line", body: "Woman in active labour, cannot reach hospital, roads flooded near Paldi crossing, doctor needed." },
+  { handle: "@fastnews_now", source: "X", body: "FORWARDED: army says leave Ahmedabad tonight or you will be arrested, share fast to all groups" },
+  { handle: "Node PWR-03", source: "Sensor Grid", body: "Substation offline near Bopal, 6 residential blocks without power, generator dispatch advised." },
+  { handle: "volunteer_sam", source: "Citizen App", body: "Blankets and dry rations needed at SG Highway community hall before nightfall for flood victims." },
+  { handle: "Unit 33", source: "Field Radio", body: "Partial wall collapse on Satellite approach road, one person pinned under debris, hydraulic rescue required." },
+  { handle: "@motera_watch", source: "X", body: "Heavy waterlogging near Chandkheda, water entering ground floor houses, 12 families need evacuation." },
+  { handle: "Call 5548", source: "Emergency Line", body: "Short circuit and sparking transformer outside Navrangpura bus stop near school, danger of fire." },
+  { handle: "relief_east", source: "Citizen App", body: "Medical emergency in Naroda industrial zone, chemical storage inundated, 3 workers experiencing breathing difficulty." },
 ];
 
-const rules: { category: Category; priority: Priority; words: string[] }[] = [
-  {
-    category: "Rescue",
-    priority: "critical",
-    words: ["trapped", "rooftop", "stuck", "pinned", "rescue", "boat", "separated", "missing", "drowning"],
-  },
-  {
-    category: "Medical",
-    priority: "high",
-    words: ["unconscious", "ambulance", "insulin", "saline", "labour", "injured", "breathing", "clinic", "oxygen"],
-  },
-  {
-    category: "Supplies",
-    priority: "moderate",
-    words: ["food", "water", "blanket", "ration", "tanker", "shelter", "supply", "resupply", "packets"],
-  },
-  {
-    category: "Infrastructure",
-    priority: "moderate",
-    words: ["road", "bridge", "tree", "power", "substation", "collapse", "blocked", "highway", "wall"],
-  },
-];
+export const AHMEDABAD_DISTRICT_COORDS: Record<string, [number, number]> = {
+  "Sabarmati Riverfront": [23.0410, 72.5690],
+  "SG Highway": [23.0290, 72.5070],
+  "Maninagar": [22.9990, 72.6120],
+  "Navrangpura": [23.0360, 72.5390],
+  "Paldi": [23.0150, 72.5670],
+  "Satellite": [23.0260, 72.5100],
+  "Bopal": [23.0180, 72.4630],
+  "Vasna": [23.0080, 72.5530],
+  "Chandkheda": [23.0990, 72.5850],
+  "Naroda": [23.0670, 72.6480],
+  "Vastrapur": [23.0350, 72.5290],
+  "Ahmedabad Central": [23.0225, 72.5714],
+};
 
-const fakeSignals = ["breaking:", "forwarded:", "share fast", "hiding it", "millions dead", "!!"];
-
-/** Lightweight keyword-scoring stand-in for an NLP classifier. */
-export function classify(body: string): {
-  category: Category;
-  confidence: number;
-  priority: Priority;
-  fake: boolean;
-} {
-  const text = body.toLowerCase();
-
-  let best = rules[0]!;
-  let bestScore = 0;
-  for (const rule of rules) {
-    const score = rule.words.reduce((acc, w) => (text.includes(w) ? acc + 1 : acc), 0);
-    if (score > bestScore) {
-      bestScore = score;
-      best = rule;
-    }
-  }
-
-  const fakeScore = fakeSignals.reduce((acc, s) => (text.includes(s) ? acc + 1 : acc), 0);
-  const fake = fakeScore >= 2;
-
-  const raw = 85 + Math.min(bestScore, 3) * 4 + (bestScore > 0 ? 2 : 0) - fakeScore * 3;
-  const confidence = Math.max(85, Math.min(99, Math.round(raw)));
-
-  const priority: Priority = fake ? "low" : bestScore === 0 ? "low" : best.priority;
-
-  return { category: best.category, confidence, priority, fake };
-}
-
-const coords: [number, number][] = [
-  [23.0410, 72.5690],
-  [23.0290, 72.5070],
-  [22.9990, 72.6120],
-  [23.0360, 72.5390],
-  [23.0150, 72.5670],
-  [23.0260, 72.5100],
-  [23.0180, 72.4630],
-  [23.0080, 72.5530],
-  [23.0225, 72.5714],
-  [23.0450, 72.5390],
-  [23.0120, 72.5800],
-  [23.0390, 72.4860],
-  [22.9950, 72.6000],
-  [23.0500, 72.5250],
-  [23.0180, 72.4950],
-];
+const defaultCoordsList: [number, number][] = Object.values(AHMEDABAD_DISTRICT_COORDS);
 
 let counter = 0;
 
+function getCoordinatesForLocation(locName?: string, index = 0): [number, number] {
+  let base = locName && AHMEDABAD_DISTRICT_COORDS[locName]
+    ? AHMEDABAD_DISTRICT_COORDS[locName]
+    : defaultCoordsList[index % defaultCoordsList.length]!;
+
+  return [
+    base[0] + (Math.random() - 0.5) * 0.009,
+    base[1] + (Math.random() - 0.5) * 0.009,
+  ];
+}
+
+/**
+ * Creates a SimPost using the synchronous heuristic classifier (instant render)
+ */
 export function makePost(index: number): SimPost {
   const raw = rawPosts[index % rawPosts.length]!;
-  const base = coords[index % coords.length]!;
   counter += 1;
+  const classification = mockClassifyDisasterPost(raw.body);
+  const [lat, lng] = getCoordinatesForLocation(classification.location_detected, index);
+
+  const confPercent = Math.round(classification.confidence > 1 ? classification.confidence : classification.confidence * 100);
+
   return {
     id: `SIG-${9100 + counter}`,
     handle: raw.handle,
     source: raw.source,
     body: raw.body,
     receivedAt: Date.now(),
-    lat: base[0] + (Math.random() - 0.5) * 0.012,
-    lng: base[1] + (Math.random() - 0.5) * 0.012,
-    ...classify(raw.body),
+    category: mapAICategoryToLegacy(classification.category),
+    aiCategory: classification.category,
+    confidence: confPercent,
+    priority: mapAISeverityToPriority(classification.severity),
+    severity: classification.severity,
+    fake: classification.fake_news_flag,
+    locationDetected: classification.location_detected,
+    recommendedAction: classification.recommended_action,
+    lat,
+    lng,
+    aiClassification: classification,
+    isAiClassified: true,
   };
+}
+
+/**
+ * Creates a SimPost by calling the AI classification service (Gemini API)
+ */
+export async function makePostAsync(index: number): Promise<SimPost> {
+  const raw = rawPosts[index % rawPosts.length]!;
+  counter += 1;
+  const id = `SIG-${9100 + counter}`;
+
+  try {
+    const classification = await classifyDisasterPost(raw.body);
+    const [lat, lng] = getCoordinatesForLocation(classification.location_detected, index);
+    const confPercent = Math.round(classification.confidence > 1 ? classification.confidence : classification.confidence * 100);
+
+    return {
+      id,
+      handle: raw.handle,
+      source: raw.source,
+      body: raw.body,
+      receivedAt: Date.now(),
+      category: mapAICategoryToLegacy(classification.category),
+      aiCategory: classification.category,
+      confidence: confPercent,
+      priority: mapAISeverityToPriority(classification.severity),
+      severity: classification.severity,
+      fake: classification.fake_news_flag,
+      locationDetected: classification.location_detected,
+      recommendedAction: classification.recommended_action,
+      lat,
+      lng,
+      aiClassification: classification,
+      isAiClassified: true,
+    };
+  } catch {
+    return makePost(index);
+  }
 }
 
 export function seedPosts(count = 5): SimPost[] {
   return Array.from({ length: count }, (_, i) => makePost(i)).reverse();
+}
+
+export async function seedPostsAsync(count = 5): Promise<SimPost[]> {
+  const promises = Array.from({ length: count }, (_, i) => makePostAsync(i));
+  const posts = await Promise.all(promises);
+  return posts.reverse();
 }
