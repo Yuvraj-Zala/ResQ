@@ -72,7 +72,7 @@ export function classify(body: string): {
 } {
   const text = body.toLowerCase();
 
-  let best = rules[0];
+  let best = rules[0]!;
   let bestScore = 0;
   for (const rule of rules) {
     const score = rule.words.reduce((acc, w) => (text.includes(w) ? acc + 1 : acc), 0);
@@ -97,7 +97,7 @@ export function classify(body: string): {
 let counter = 0;
 
 export function makePost(index: number): SimPost {
-  const raw = rawPosts[index % rawPosts.length];
+  const raw = rawPosts[index % rawPosts.length]!;
   counter += 1;
   return {
     id: `SIG-${9100 + counter}`,
