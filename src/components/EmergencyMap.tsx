@@ -1,11 +1,13 @@
 import { Suspense, lazy, useEffect, useState } from "react";
 import { priorityColor, priorityLabel, type Priority } from "@/lib/incidents";
+import { statusColor, statusLabel } from "@/lib/ops";
+import type { MapProps } from "./EmergencyMapInner";
 
 const MapClient = lazy(() => import("./EmergencyMapInner"));
 
 const legend: Priority[] = ["critical", "high", "moderate", "low"];
 
-export function EmergencyMap() {
+export function EmergencyMap(props: MapProps) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
@@ -13,7 +15,7 @@ export function EmergencyMap() {
     <div className="relative h-[420px] overflow-hidden rounded-xl border border-border bg-muted/40 lg:h-[520px]">
       {mounted ? (
         <Suspense fallback={<MapSkeleton />}>
-          <MapClient />
+          <MapClient {...props} />
         </Suspense>
       ) : (
         <MapSkeleton />
@@ -31,6 +33,12 @@ export function EmergencyMap() {
                 style={{ backgroundColor: priorityColor[p] }}
               />
               {priorityLabel[p]}
+            </div>
+          ))}
+          {(["rescue", "medical", "resolved", "spam"] as const).map((s) => (
+            <div key={s} className="flex items-center gap-2 text-[11px] text-foreground">
+              <span className="size-2.5 rounded-full" style={{ backgroundColor: statusColor[s] }} />
+              {statusLabel[s]}
             </div>
           ))}
         </div>

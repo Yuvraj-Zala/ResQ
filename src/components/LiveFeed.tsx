@@ -1,5 +1,6 @@
 import { Radio, Volume2, VolumeX, Pause, Play, ShieldAlert } from "lucide-react";
-import { useIngestionFeed } from "@/hooks/useIngestionFeed";
+import { useIngestionFeed, type IngestionFeed } from "@/hooks/useIngestionFeed";
+import { statusBadgeClass, statusLabel } from "@/lib/ops";
 import type { Category } from "@/lib/simulator";
 import { PriorityBadge } from "./PriorityBadge";
 
@@ -15,8 +16,17 @@ function ago(ts: number) {
   return s < 60 ? `${s}s` : `${Math.round(s / 60)}m`;
 }
 
-export function LiveFeed({ className = "" }: { className?: string }) {
-  const { posts, live, setLive, sound, toggleSound } = useIngestionFeed();
+export function LiveFeed({
+  className = "",
+  feed,
+  onSelect,
+}: {
+  className?: string;
+  feed?: IngestionFeed;
+  onSelect?: (id: string) => void;
+}) {
+  const own = useIngestionFeed();
+  const { posts, live, setLive, sound, toggleSound, statusOf, selectedId } = feed ?? own;
 
   return (
     <div className={`flex flex-col rounded-xl border border-border bg-card ${className}`}>
@@ -60,11 +70,13 @@ export function LiveFeed({ className = "" }: { className?: string }) {
 
       <div className="flex-1 divide-y divide-border overflow-y-auto">
         {posts.map((post, i) => (
-          <article
+          <button
             key={post.id}
-            className={`px-4 py-3 transition-colors hover:bg-accent/50 ${
+            type="button"
+            onClick={() => onSelect?.(post.id)}
+            className={`block w-full cursor-pointer px-4 py-3 text-left transition-colors hover:bg-accent/50 ${
               i === 0 ? "animate-in fade-in slide-in-from-top-2 duration-500 bg-accent/30" : ""
-            }`}
+            } ${post.id === selectedId ? "bg-accent/60 ring-1 ring-inset ring-primary/40" : ""}`}
           >
             <div className="flex items-center justify-between gap-2">
               <p className="truncate text-xs font-medium text-foreground">{post.handle}</p>
@@ -82,6 +94,11 @@ export function LiveFeed({ className = "" }: { className?: string }) {
               <span className="rounded-full bg-muted px-2 py-0.5 font-mono text-[10px] text-muted-foreground">
                 conf {post.confidence}%
               </span>
+              <span
+                className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ring-1 ${statusBadgeClass[statusOf(post)]}`}
+              >
+                {statusLabel[statusOf(post)]}
+              </span>
               {post.fake && (
                 <span className="inline-flex items-center gap-1 rounded-full bg-caution/12 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-caution ring-1 ring-caution/25">
                   <ShieldAlert className="size-3" /> Unverified
@@ -92,7 +109,7 @@ export function LiveFeed({ className = "" }: { className?: string }) {
             <div className="mt-2 font-mono text-[10px] uppercase tracking-wider text-muted-foreground/70">
               {post.source} · {post.id} · {ago(post.receivedAt)} ago
             </div>
-          </article>
+          </button>
         ))}
       </div>
     </div>
