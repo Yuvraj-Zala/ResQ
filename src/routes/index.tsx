@@ -5,6 +5,9 @@ import { EmergencyMap } from "@/components/EmergencyMap";
 import { LiveFeed } from "@/components/LiveFeed";
 import { PriorityBadge } from "@/components/PriorityBadge";
 import { incidents } from "@/lib/incidents";
+import { IncidentActionModal } from "@/components/IncidentActionModal";
+import { useIngestionFeed } from "@/hooks/useIngestionFeed";
+import type { IncidentStatus } from "@/lib/ops";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -26,6 +29,16 @@ export const Route = createFileRoute("/")({
 });
 
 function Overview() {
+  const feed = useIngestionFeed();
+  const { posts, selectedId, setSelectedId, statusOf, setStatus } = feed;
+  const selected = posts.find((p) => p.id === selectedId) ?? null;
+
+  const handleAction = (status: IncidentStatus) => {
+    if (!selectedId) return;
+    setStatus(selectedId, status);
+    setSelectedId(null);
+  };
+
   return (
     <div className="space-y-5">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -49,7 +62,12 @@ function Overview() {
             </span>
           </div>
 
-          <EmergencyMap />
+          <EmergencyMap
+            posts={posts}
+            statusOf={statusOf}
+            selectedId={selectedId}
+            onSelect={(p) => setSelectedId(p.id)}
+          />
 
           <div className="rounded-xl border border-border bg-card">
             <div className="border-b border-border px-4 py-3">
@@ -68,8 +86,15 @@ function Overview() {
           </div>
         </section>
 
-        <LiveFeed className="max-h-[720px]" />
+        <LiveFeed className="max-h-[720px]" feed={feed} onSelect={setSelectedId} />
       </div>
+
+      <IncidentActionModal
+        post={selected}
+        status={selected ? statusOf(selected) : "new"}
+        onAction={handleAction}
+        onOpenChange={(open) => !open && setSelectedId(null)}
+      />
     </div>
   );
 }
