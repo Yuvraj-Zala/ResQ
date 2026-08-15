@@ -84,6 +84,3 @@ export function useIngestionFeed() {
 }
 
 export type IngestionFeed = ReturnType<typeof useIngestionFeed>;
-
-function _unused() {
-}
