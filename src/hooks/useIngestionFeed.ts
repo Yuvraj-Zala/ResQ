@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { makePost, seedPosts, type SimPost } from "@/lib/simulator";
+import type { IncidentStatus } from "@/lib/ops";
 
 const SEED = 5;
 const MAX = 30;
@@ -32,6 +33,8 @@ export function useIngestionFeed() {
   const [posts, setPosts] = useState<SimPost[]>([]);
   const [live, setLive] = useState(true);
   const [sound, setSound] = useState(false);
+  const [statuses, setStatuses] = useState<Record<string, IncidentStatus>>({});
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const indexRef = useRef(SEED);
   const soundRef = useRef(sound);
   soundRef.current = sound;
@@ -57,5 +60,30 @@ export function useIngestionFeed() {
     });
   }, []);
 
-  return { posts, live, setLive, sound, toggleSound };
+  const setStatus = useCallback((id: string, status: IncidentStatus) => {
+    setStatuses((prev) => ({ ...prev, [id]: status }));
+  }, []);
+
+  const statusOf = useCallback(
+    (post: SimPost): IncidentStatus => statuses[post.id] ?? "new",
+    [statuses],
+  );
+
+  return {
+    posts,
+    live,
+    setLive,
+    sound,
+    toggleSound,
+    statuses,
+    statusOf,
+    setStatus,
+    selectedId,
+    setSelectedId,
+  };
+}
+
+export type IngestionFeed = ReturnType<typeof useIngestionFeed>;
+
+function _unused() {
 }
