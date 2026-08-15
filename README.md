@@ -1,26 +1,99 @@
-# RescuAI Dashboard
+# RescuAI — Disaster Intelligence & Response Support System
 
-"Create a production-ready, dark-mode Disaster Intelligence and Response Support System dashboard called 'RescuAI' using React, Tailwind CSS, and Lucide icons. Include a sidebar with options: Overview, Live Feeds, Heatmap, Incident Logs, and Dispatch Center. Main screen must feature: 4 summary cards (Active Alerts, High Priority Rescues, Resolved Today, Connected Sources), a center Map component using Leaflet showing emergency markers across a city (color-coded by priority), and a right-side feed of incoming emergency posts."
+RescuAI is a production-oriented, dark-mode web platform for disaster intelligence and emergency response coordination. It aggregates live incident signals, classifies them by priority, renders them on an interactive city map, and gives command-center operators the tooling to triage, dispatch, and log rescues in real time.
 
-This project was built with [Lovable](https://lovable.dev).
+Built with **TanStack Start** (full-stack React), **Vite**, **Tailwind CSS v4**, and **Leaflet**.
 
-**Live app**: https://rescue-sense-pro.lovable.app
+---
 
-## Build with Lovable
+## Features
 
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/4973c226-2915-4223-b8df-f508df26218a).
+- **Overview dashboard** — Summary cards for active alerts, high-priority rescues, resolved incidents, and connected sources, backed by a live ingestion feed.
+- **Live Feeds** — Real-time stream of incoming emergency posts from connected sources, with per-incident triage actions.
+- **City Map** — Leaflet-based emergency map with priority-color-coded markers across the city; markers update as new signals arrive.
+- **Heatmap** — Density view of incident activity to spot emerging hotspots.
+- **Incident Logs** — Searchable, filterable record of all incidents and their resolution states.
+- **Dispatch Center** — Operator workspace for assigning and tracking response units.
+- **Incident Triage** — Modal-driven status transitions (e.g. open → dispatched → resolved) per incident.
+- **AI-assisted classification** — Server-side classifier that scores incoming signals and assigns severity.
+- **Offline Mesh Mode** — Simulated mesh network mode for degraded-connectivity response scenarios.
+- **Scenario presets** — Bundled demo scenarios (e.g. flood, multi-hazard) that drive deterministic simulated incident streams.
+- **SITREP export** — One-click generation of a Situation Report (PDF) for the active command context.
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
+## Tech Stack
 
-## Development
+| Layer              | Technology                                          |
+| ------------------ | --------------------------------------------------- |
+| Framework          | TanStack Start (TanStack Router + React 19)         |
+| Build tool         | Vite                                                |
+| Styling            | Tailwind CSS v4 (utility-first, dark theme)         |
+| Maps               | Leaflet + react-leaflet                             |
+| Data fetching      | TanStack Query                                      |
+| Forms / validation | react-hook-form + zod                               |
+| Charts             | Recharts                                            |
+| PDF export         | jsPDF                                               |
+| Server             | Node.js (Nitro) via TanStack Start server functions |
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+## Getting Started
+
+### Prerequisites
+
+- Node.js 20+ and npm
+
+### Install
 
 ```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
+npm install
+```
+
+### Run the dev server
+
+```sh
 npm run dev
 ```
+
+The app is served at `http://localhost:3000` with hot module replacement.
+
+### Production build
+
+```sh
+npm run build
+npm run preview
+```
+
+## Project Structure
+
+```
+src/
+├── components/        # UI components (sidebar, stat cards, map, live feed, modals)
+├── context/           # React contexts (demo scenario, offline mesh)
+├── hooks/             # Shared hooks (ingestion feed, simulators)
+├── lib/               # Domain logic (incidents, ops, classification, SITREP export)
+├── routes/            # TanStack Router file-based routes
+├── server.ts          # SSR server entry
+└── styles.css         # Global styles + design tokens
+```
+
+## Design System
+
+The interface uses a dark command-center aesthetic:
+
+- **Surfaces** — near-black ink backgrounds (`#1d1d1f`) with subtle elevated cards (`#272729`)
+- **Accent** — Action Blue (`#0066cc`) with sky highlight (`#2997ff`) for on-dark emphasis
+- **Semantic colors** — red / amber / green reserved strictly for emergency severity states
+- **Typography** — compact system font stack with monospace micro-labels for telemetry-style readouts
+
+## Available Scripts
+
+| Script              | Description                                |
+| ------------------- | ------------------------------------------ |
+| `npm run dev`       | Start the development server               |
+| `npm run build`     | Create a production build                  |
+| `npm run build:dev` | Create a development-mode production build |
+| `npm run preview`   | Preview the production build locally       |
+| `npm run lint`      | Run ESLint across the codebase             |
+| `npm run format`    | Format the codebase with Prettier          |
+
+## License
+
+Proprietary. All rights reserved.
