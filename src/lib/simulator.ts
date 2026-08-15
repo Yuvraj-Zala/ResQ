@@ -23,21 +23,21 @@ interface RawPost {
 }
 
 export const rawPosts: RawPost[] = [
-  { handle: "@arjun_m", source: "X", body: "Trapped on 2nd floor near Main St, water rising!" },
-  { handle: "shelter_ops", source: "Citizen App", body: "Need food packets at St. Jude shelter, around 200 people." },
-  { handle: "Unit 09", source: "Field Radio", body: "Road blocked by fallen tree on Highway 4, convoy rerouting." },
-  { handle: "Call 5522", source: "Emergency Line", body: "Elderly man unconscious, breathing shallow, needs ambulance at Sector 7." },
-  { handle: "@relief_rita", source: "X", body: "Family of five stuck on rooftop behind the old textile mill, send boat." },
-  { handle: "clinic_north", source: "Citizen App", body: "Out of insulin and saline at north clinic, urgent resupply required." },
-  { handle: "Node BRD-14", source: "Sensor Grid", body: "Bridge strain sensors exceeding safe limits, closure recommended." },
-  { handle: "@viral_alerts", source: "X", body: "BREAKING: entire city dam has collapsed, millions dead, government hiding it!!" },
-  { handle: "Unit 21", source: "Field Radio", body: "Two children separated from parents at evacuation point B, need pickup." },
-  { handle: "@ward_help", source: "X", body: "Drinking water tankers have not arrived in Ward 9 for two days." },
-  { handle: "Call 5530", source: "Emergency Line", body: "Woman in labour, cannot reach hospital, roads flooded near Lake Road." },
-  { handle: "@fastnews_now", source: "X", body: "FORWARDED: army says leave the city tonight or you will be arrested, share fast" },
-  { handle: "Node PWR-03", source: "Sensor Grid", body: "Substation offline, 6 blocks without power, generator dispatch advised." },
-  { handle: "volunteer_sam", source: "Citizen App", body: "Blankets and dry rations needed at community hall shelter before nightfall." },
-  { handle: "Unit 33", source: "Field Radio", body: "Partial wall collapse on Ferry Lane, one person pinned under debris." },
+  { handle: "@amdavadi_raj", source: "X", body: "Trapped on 2nd floor near Sabarmati Riverfront, water rising fast!" },
+  { handle: "shelter_ops", source: "Citizen App", body: "Need food packets at Satellite shelter, around 200 people from Bopal." },
+  { handle: "Unit 09", source: "Field Radio", body: "Road blocked by fallen tree on SG Highway near ISCON, convoy rerouting via Ring Road." },
+  { handle: "Call 5522", source: "Emergency Line", body: "Elderly man unconscious near Maninagar station, breathing shallow, needs ambulance." },
+  { handle: "@relief_rita", source: "X", body: "Family of five stuck on rooftop behind the old mill in Paldi, send boat." },
+  { handle: "clinic_north", source: "Citizen App", body: "Out of insulin and saline at Navrangpura clinic, urgent resupply required." },
+  { handle: "Node SBR-14", source: "Sensor Grid", body: "Sabarmati bridge strain sensors exceeding safe limits, closure recommended." },
+  { handle: "@viral_alerts", source: "X", body: "BREAKING: Narmada dam has collapsed, millions dead, government hiding it!!" },
+  { handle: "Unit 21", source: "Field Radio", body: "Two children separated from parents at Maninagar evacuation point, need pickup." },
+  { handle: "@ward_help", source: "X", body: "Drinking water tankers have not arrived in Vasna ward for two days." },
+  { handle: "Call 5530", source: "Emergency Line", body: "Woman in labour, cannot reach hospital, roads flooded near Paldi crossing." },
+  { handle: "@fastnews_now", source: "X", body: "FORWARDED: army says leave Ahmedabad tonight or you will be arrested, share fast" },
+  { handle: "Node PWR-03", source: "Sensor Grid", body: "Substation offline near Bopal, 6 blocks without power, generator dispatch advised." },
+  { handle: "volunteer_sam", source: "Citizen App", body: "Blankets and dry rations needed at SG Highway community hall before nightfall." },
+  { handle: "Unit 33", source: "Field Radio", body: "Partial wall collapse on Satellite approach road, one person pinned under debris." },
 ];
 
 const rules: { category: Category; priority: Priority; words: string[] }[] = [
@@ -87,7 +87,6 @@ export function classify(body: string): {
   const fakeScore = fakeSignals.reduce((acc, s) => (text.includes(s) ? acc + 1 : acc), 0);
   const fake = fakeScore >= 2;
 
-  // Confidence: base on keyword density, clamped to 85-99, penalised for fake signals.
   const raw = 85 + Math.min(bestScore, 3) * 4 + (bestScore > 0 ? 2 : 0) - fakeScore * 3;
   const confidence = Math.max(85, Math.min(99, Math.round(raw)));
 
@@ -97,21 +96,21 @@ export function classify(body: string): {
 }
 
 const coords: [number, number][] = [
-  [19.0760, 72.8777],
-  [19.0896, 72.8656],
-  [19.0330, 72.8570],
-  [19.1136, 72.8697],
-  [19.0176, 72.8562],
-  [19.1197, 72.9051],
-  [19.0500, 72.9000],
-  [19.0640, 72.8330],
-  [19.1010, 72.8880],
-  [19.0450, 72.8790],
-  [19.0820, 72.9120],
-  [19.1290, 72.8460],
-  [19.0230, 72.8410],
-  [19.0990, 72.8290],
-  [19.0680, 72.9210],
+  [23.0410, 72.5690],
+  [23.0290, 72.5070],
+  [22.9990, 72.6120],
+  [23.0360, 72.5390],
+  [23.0150, 72.5670],
+  [23.0260, 72.5100],
+  [23.0180, 72.4630],
+  [23.0080, 72.5530],
+  [23.0225, 72.5714],
+  [23.0450, 72.5390],
+  [23.0120, 72.5800],
+  [23.0390, 72.4860],
+  [22.9950, 72.6000],
+  [23.0500, 72.5250],
+  [23.0180, 72.4950],
 ];
 
 let counter = 0;

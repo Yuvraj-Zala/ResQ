@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { MapContainer, TileLayer, CircleMarker, Popup, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, CircleMarker, Popup, useMap, Polygon } from "react-leaflet";
 import { incidents, priorityColor, priorityLabel } from "@/lib/incidents";
 import { statusColor, statusLabel, type IncidentStatus } from "@/lib/ops";
 import type { SimPost } from "@/lib/simulator";
@@ -9,6 +9,7 @@ export interface MapProps {
   statusOf?: (post: SimPost) => IncidentStatus;
   selectedId?: string | null;
   onSelect?: (post: SimPost) => void;
+  showFloodZones?: boolean;
 }
 
 function FlyTo({ target }: { target: [number, number] | null }) {
@@ -19,17 +20,39 @@ function FlyTo({ target }: { target: [number, number] | null }) {
   return null;
 }
 
+const floodZones: [number, number][][] = [
+  [
+    [23.0550, 72.5750],
+    [23.0550, 72.5900],
+    [23.0350, 72.5900],
+    [23.0350, 72.5750],
+  ],
+  [
+    [23.0250, 72.5550],
+    [23.0250, 72.5800],
+    [22.9950, 72.5800],
+    [22.9950, 72.5550],
+  ],
+  [
+    [23.0100, 72.5900],
+    [23.0100, 72.6200],
+    [22.9850, 72.6200],
+    [22.9850, 72.5900],
+  ],
+];
+
 export default function EmergencyMapClient({
   posts = [],
   statusOf,
   selectedId = null,
   onSelect,
+  showFloodZones = false,
 }: MapProps) {
   const selected = posts.find((p) => p.id === selectedId) ?? null;
 
   return (
     <MapContainer
-      center={[19.066, 72.874]}
+      center={[23.0225, 72.5714]}
       zoom={12}
       scrollWheelZoom={false}
       className="h-full w-full"
@@ -41,6 +64,28 @@ export default function EmergencyMapClient({
       />
 
       <FlyTo target={selected ? [selected.lat, selected.lng] : null} />
+
+      {showFloodZones &&
+        floodZones.map((zone, i) => (
+          <Polygon
+            key={`flood-${i}`}
+            positions={zone}
+            pathOptions={{
+              color: "#3b82f6",
+              fillColor: "#3b82f6",
+              fillOpacity: 0.15,
+              weight: 1,
+              dashArray: "4 2",
+            }}
+          >
+            <Popup>
+              <div style={{ minWidth: 140 }}>
+                <strong>FLOOD RISK ZONE {String.fromCharCode(65 + i)}</strong>
+                <div style={{ opacity: 0.7 }}>Sabarmati basin · high-risk inundation area</div>
+              </div>
+            </Popup>
+          </Polygon>
+        ))}
 
       {incidents.map((i) => (
         <CircleMarker
@@ -55,7 +100,7 @@ export default function EmergencyMapClient({
           }}
         >
           <Popup>
-            <div style={{ minWidth: 180 }}>
+            <div style={{ minWidth: 180, fontFamily: "monospace", fontSize: "11px" }}>
               <strong>{i.id}</strong> · {priorityLabel[i.priority]}
               <div>{i.title}</div>
               <div style={{ opacity: 0.7 }}>
@@ -84,7 +129,7 @@ export default function EmergencyMapClient({
             }}
           >
             <Popup>
-              <div style={{ minWidth: 190 }}>
+              <div style={{ minWidth: 190, fontFamily: "monospace", fontSize: "11px" }}>
                 <strong>{p.id}</strong> · {p.category}
                 <div>{p.body}</div>
                 <div style={{ opacity: 0.7 }}>

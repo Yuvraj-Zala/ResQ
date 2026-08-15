@@ -29,11 +29,18 @@ export function LiveFeed({
   const { posts, live, setLive, sound, toggleSound, statusOf, selectedId } = feed ?? own;
 
   return (
-    <div className={`flex flex-col rounded-sm border border-border bg-card ${className}`}>
+    <div className={`relative flex flex-col rounded-sm border border-border bg-card ${className}`}>
+      {/* Corner accent */}
+      <div className="pointer-events-none absolute left-0 top-0 z-10 size-3 border-l-2 border-t-2 border-primary/40" />
       <div className="flex items-center justify-between border-b border-border px-3 py-2.5">
         <div className="flex items-center gap-2">
           <Radio className="size-3.5 text-primary" />
-          <h2 className="text-[13px] font-semibold text-foreground">Incoming Signals</h2>
+          <div>
+            <p className="font-mono text-[8px] uppercase tracking-widest text-muted-foreground/70">
+              [FEED_LIVE_RAW]
+            </p>
+            <h2 className="text-[13px] font-semibold text-foreground">Incoming Signals</h2>
+          </div>
         </div>
         <div className="flex items-center gap-1.5">
           <button

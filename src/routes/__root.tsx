@@ -7,10 +7,9 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
-import { OctagonAlert as AlertOctagon } from "lucide-react";
+import { useEffect, useState, type ReactNode } from "react";
+import { OctagonAlert as AlertOctagon, ShieldHalf, Activity } from "lucide-react";
 import { AppSidebar } from "@/components/AppSidebar";
-
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -27,7 +26,7 @@ function NotFoundComponent() {
         <div className="mt-6">
           <Link
             to="/"
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            className="inline-flex items-center justify-center rounded-sm bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
             Go home
           </Link>
@@ -59,13 +58,13 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
               router.invalidate();
               reset();
             }}
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            className="inline-flex items-center justify-center rounded-sm bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
             Try again
           </button>
           <a
             href="/"
-            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
+            className="inline-flex items-center justify-center rounded-sm border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
           >
             Go home
           </a>
@@ -73,6 +72,27 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
       </div>
     </div>
   );
+}
+
+function useISTClock() {
+  const [time, setTime] = useState("");
+  useEffect(() => {
+    const update = () => {
+      const now = new Date();
+      const istTime = now.toLocaleTimeString("en-IN", {
+        timeZone: "Asia/Kolkata",
+        hour12: false,
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      });
+      setTime(istTime);
+    };
+    update();
+    const timer = setInterval(update, 1000);
+    return () => clearInterval(timer);
+  }, []);
+  return time;
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
@@ -131,13 +151,21 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const istTime = useISTClock();
 
   return (
     <QueryClientProvider client={queryClient}>
       <div className="flex min-h-screen w-full bg-background font-sans text-foreground">
         <AppSidebar />
         <div className="flex min-w-0 flex-1 flex-col">
-          <div className="flex items-center gap-4 border-b border-border bg-zinc-950 px-4 py-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+          {/* Tactical telemetry strip */}
+          <div className="flex items-center gap-3 border-b border-border bg-zinc-950 px-4 py-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+            {/* Agency emblem */}
+            <span className="flex items-center gap-1.5 text-foreground">
+              <ShieldHalf className="size-3.5 text-primary" />
+              GSDMA / NDRF UNIT 6
+            </span>
+            <span className="text-border">|</span>
             <span className="flex items-center gap-1.5 text-success">
               <span className="size-1.5 animate-pulse rounded-full bg-success" />
               SYSTEM STATUS: ACTIVE
@@ -145,9 +173,19 @@ function RootComponent() {
             <span className="text-border">|</span>
             <span>OPERATOR ID: NDRF-#4092</span>
             <span className="text-border">|</span>
-            <span>SECTOR: MUMBAI-WEST</span>
-            <span className="ml-auto hidden items-center gap-1.5 text-destructive sm:flex">
-              <AlertOctagon className="size-3" /> LEVEL 3 ACTIVATION
+            <span>SECTOR: AHMEDABAD CENTRAL</span>
+            {/* Right side: latency, clock, alert */}
+            <span className="ml-auto hidden items-center gap-3 sm:flex">
+              <span className="flex items-center gap-1 text-success">
+                <Activity className="size-3" />
+                LATENCY: 24ms
+              </span>
+              <span className="text-border">|</span>
+              <span className="text-foreground">IST {istTime}</span>
+              <span className="text-border">|</span>
+              <span className="flex items-center gap-1 text-destructive">
+                <AlertOctagon className="size-3" /> LEVEL 3 ACTIVATION
+              </span>
             </span>
           </div>
           <header className="sticky top-0 z-[600] flex items-center justify-between gap-4 border-b border-border bg-background/90 px-4 py-2.5 backdrop-blur">
@@ -156,7 +194,7 @@ function RootComponent() {
                 Disaster Intelligence &amp; Response Support
               </h1>
               <p className="font-mono text-[10px] text-muted-foreground">
-                Command Console · Real-time Operations
+                Command Console · Ahmedabad Central · Real-time Operations
               </p>
             </div>
             <div className="flex items-center gap-2">

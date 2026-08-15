@@ -22,7 +22,8 @@ export function AppSidebar() {
 
   return (
     <aside className="sticky top-0 hidden h-screen w-60 shrink-0 flex-col border-r border-border bg-sidebar md:flex">
-      <div className="flex items-center gap-2.5 border-b border-border px-4 py-4">
+      <div className="relative flex items-center gap-2.5 border-b border-border px-4 py-4">
+        <div className="absolute left-0 top-0 size-3 border-l-2 border-t-2 border-primary/40" />
         <div className="grid size-8 place-items-center rounded-sm bg-primary/10 ring-1 ring-primary/20">
           <ShieldAlert className="size-4 text-primary" />
         </div>
@@ -35,8 +36,8 @@ export function AppSidebar() {
       </div>
 
       <nav className="flex-1 space-y-0.5 px-2 py-3">
-        <p className="px-3 pb-1.5 text-[9px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-          Operations
+        <p className="px-3 pb-1.5 font-mono text-[8px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/70">
+          [NAV_OPERATIONS]
         </p>
         {items.map((item) => {
           const active = pathname === item.url;
@@ -57,19 +58,20 @@ export function AppSidebar() {
         })}
       </nav>
 
-      <div className="m-2 rounded-sm border border-border bg-card p-3">
+      <div className="relative m-2 rounded-sm border border-border bg-card p-3">
+        <div className="absolute left-0 top-0 size-3 border-l-2 border-t-2 border-destructive/40" />
         <div className="flex items-center gap-2">
           <Waves className="size-3.5 text-destructive" />
           <p className="text-[11px] font-semibold text-foreground">Regional Status</p>
         </div>
         <p className="mt-1.5 text-[10px] leading-relaxed text-muted-foreground">
-          Monsoon surge active. 3 wards under evacuation advisory.
+          Monsoon surge active. 3 wards under evacuation advisory near Sabarmati basin.
         </p>
         <div className="mt-2.5 h-1 w-full overflow-hidden rounded-sm bg-muted">
           <div className="h-full w-[72%] rounded-sm bg-destructive" />
         </div>
-        <p className="mt-1.5 font-mono text-[9px] uppercase tracking-widest text-muted-foreground">
-          Load 72%
+        <p className="mt-1.5 font-mono text-[8px] uppercase tracking-widest text-muted-foreground">
+          [SYS_LOAD] 72%
         </p>
       </div>
     </aside>

@@ -6,9 +6,9 @@ import { PriorityBadge } from "@/components/PriorityBadge";
 export const Route = createFileRoute("/dispatch-center")({
   head: () => ({
     meta: [
-      { title: "Dispatch Center — RescuAI" },
-      { name: "description", content: "Assign response units, track ETAs and coordinate rescue teams in the field." },
-      { property: "og:title", content: "Dispatch Center — RescuAI" },
+      { title: "Dispatch Center — RescuAI Ahmedabad" },
+      { name: "description", content: "Assign response units, track ETAs and coordinate rescue teams across Ahmedabad." },
+      { property: "og:title", content: "Dispatch Center — RescuAI Ahmedabad" },
       { property: "og:description", content: "Coordinate units and track rescue ETAs in real time." },
     ],
   }),
@@ -25,8 +25,12 @@ const units = [
 function Dispatch() {
   return (
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_320px]">
-      <div className="rounded-sm border border-border bg-card">
+      <div className="relative rounded-sm border border-border bg-card">
+        <div className="pointer-events-none absolute left-0 top-0 size-3 border-l-2 border-t-2 border-primary/40" />
         <div className="border-b border-border px-3 py-2.5">
+          <p className="font-mono text-[8px] uppercase tracking-widest text-muted-foreground/70">
+            [DISPATCH_UNASSIGNED]
+          </p>
           <h2 className="text-[13px] font-semibold text-foreground">Unassigned Incidents</h2>
         </div>
         <ul className="divide-y divide-border">
@@ -47,10 +51,16 @@ function Dispatch() {
         </ul>
       </div>
 
-      <div className="rounded-sm border border-border bg-card">
+      <div className="relative rounded-sm border border-border bg-card">
+        <div className="pointer-events-none absolute left-0 top-0 size-3 border-l-2 border-t-2 border-primary/40" />
         <div className="flex items-center gap-2 border-b border-border px-3 py-2.5">
           <Truck className="size-3.5 text-primary" />
-          <h2 className="text-[13px] font-semibold text-foreground">Response Units</h2>
+          <div>
+            <p className="font-mono text-[8px] uppercase tracking-widest text-muted-foreground/70">
+              [UNITS_FIELD]
+            </p>
+            <h2 className="text-[13px] font-semibold text-foreground">Response Units</h2>
+          </div>
         </div>
         <ul className="divide-y divide-border">
           {units.map((u) => (
