@@ -17,9 +17,9 @@ export const statusColor: Record<IncidentStatus, string> = {
 };
 
 export const statusBadgeClass: Record<IncidentStatus, string> = {
-  new: "bg-destructive/15 text-destructive ring-destructive/30",
-  rescue: "bg-primary/15 text-primary ring-primary/30",
-  medical: "bg-caution/15 text-caution ring-caution/30",
-  resolved: "bg-success/15 text-success ring-success/30",
+  new: "bg-destructive/10 text-destructive ring-destructive/20",
+  rescue: "bg-primary/10 text-primary ring-primary/20",
+  medical: "bg-caution/10 text-caution ring-caution/20",
+  resolved: "bg-success/10 text-success ring-success/20",
   spam: "bg-muted text-muted-foreground ring-border",
 };

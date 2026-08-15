@@ -8,7 +8,7 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
-import { AlertOctagon } from "lucide-react";
+import { OctagonAlert as AlertOctagon } from "lucide-react";
 import { AppSidebar } from "@/components/AppSidebar";
 
 
@@ -137,31 +137,40 @@ function RootComponent() {
       <div className="flex min-h-screen w-full bg-background font-sans text-foreground">
         <AppSidebar />
         <div className="flex min-w-0 flex-1 flex-col">
-          <header className="sticky top-0 z-[600] flex items-center justify-between gap-4 border-b border-border bg-background/85 px-5 py-3 backdrop-blur">
+          <div className="flex items-center gap-4 border-b border-border bg-zinc-950 px-4 py-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+            <span className="flex items-center gap-1.5 text-success">
+              <span className="size-1.5 animate-pulse rounded-full bg-success" />
+              SYSTEM STATUS: ACTIVE
+            </span>
+            <span className="text-border">|</span>
+            <span>OPERATOR ID: NDRF-#4092</span>
+            <span className="text-border">|</span>
+            <span>SECTOR: MUMBAI-WEST</span>
+            <span className="ml-auto hidden items-center gap-1.5 text-destructive sm:flex">
+              <AlertOctagon className="size-3" /> LEVEL 3 ACTIVATION
+            </span>
+          </div>
+          <header className="sticky top-0 z-[600] flex items-center justify-between gap-4 border-b border-border bg-background/90 px-4 py-2.5 backdrop-blur">
             <div>
               <h1 className="text-sm font-semibold tracking-tight text-foreground">
                 Disaster Intelligence &amp; Response Support
               </h1>
-              <p className="font-mono text-[11px] text-muted-foreground">
-                Command console · Sector Mumbai-West
+              <p className="font-mono text-[10px] text-muted-foreground">
+                Command Console · Real-time Operations
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <span className="hidden items-center gap-1.5 rounded-md border border-destructive/30 bg-destructive/10 px-2.5 py-1 text-[11px] font-medium text-destructive sm:flex">
-                <AlertOctagon className="size-3.5" /> Level 3 Activation
-              </span>
-              <span className="grid size-8 place-items-center rounded-full bg-secondary font-mono text-[11px] text-foreground">
+              <span className="grid size-7 place-items-center rounded-sm bg-secondary font-mono text-[10px] text-foreground">
                 OP
               </span>
             </div>
           </header>
-          <main className="flex-1 p-5">
+          <main className="flex-1 p-4">
             {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
             <Outlet />
           </main>
         </div>
       </div>
     </QueryClientProvider>
-
   );
 }

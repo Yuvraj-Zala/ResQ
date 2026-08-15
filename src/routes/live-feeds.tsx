@@ -11,9 +11,9 @@ export const Route = createFileRoute("/live-feeds")({
     ],
   }),
   component: () => (
-    <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
-      <LiveFeed />
-      <LiveFeed />
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+      <LiveFeed className="max-h-[680px]" />
+      <LiveFeed className="max-h-[680px]" />
     </div>
   ),
 });

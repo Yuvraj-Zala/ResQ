@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { AlertTriangle, LifeBuoy, CheckCircle2, Antenna } from "lucide-react";
+import { TriangleAlert as AlertTriangle, LifeBuoy, CircleCheck as CheckCircle2, Antenna } from "lucide-react";
 import { StatCard } from "@/components/StatCard";
 import { EmergencyMap } from "@/components/EmergencyMap";
 import { LiveFeed } from "@/components/LiveFeed";
@@ -40,24 +40,24 @@ function Overview() {
   };
 
   return (
-    <div className="space-y-5">
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
         <StatCard label="Active Alerts" value="38" delta="+6 in last hour" trend="up" icon={AlertTriangle} tone="destructive" />
         <StatCard label="High Priority Rescues" value="12" delta="4 teams en route" trend="up" icon={LifeBuoy} tone="warning" />
         <StatCard label="Resolved Today" value="147" delta="-9% response time" trend="down" icon={CheckCircle2} tone="success" />
         <StatCard label="Connected Sources" value="26" delta="All channels nominal" trend="flat" icon={Antenna} tone="primary" />
       </div>
 
-      <div className="grid grid-cols-1 gap-5 xl:grid-cols-[1fr_360px]">
-        <section className="space-y-4">
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-[1fr_340px]">
+        <section className="space-y-3">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-sm font-semibold text-foreground">City Incident Map</h2>
-              <p className="text-xs text-muted-foreground">
+              <h2 className="text-[13px] font-semibold text-foreground">City Incident Map</h2>
+              <p className="font-mono text-[10px] text-muted-foreground">
                 {incidents.length} geolocated incidents · auto-refresh 30s
               </p>
             </div>
-            <span className="rounded-md border border-border px-2 py-1 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+            <span className="rounded-sm border border-border px-2 py-0.5 font-mono text-[9px] uppercase tracking-widest text-muted-foreground">
               Sector Mumbai-West
             </span>
           </div>
@@ -69,16 +69,16 @@ function Overview() {
             onSelect={(p) => setSelectedId(p.id)}
           />
 
-          <div className="rounded-xl border border-border bg-card">
-            <div className="border-b border-border px-4 py-3">
-              <h2 className="text-sm font-semibold text-foreground">Priority Queue</h2>
+          <div className="rounded-sm border border-border bg-card">
+            <div className="border-b border-border px-3 py-2.5">
+              <h2 className="text-[13px] font-semibold text-foreground">Priority Queue</h2>
             </div>
             <ul className="divide-y divide-border">
               {incidents.slice(0, 5).map((i) => (
-                <li key={i.id} className="flex items-center gap-3 px-4 py-3 text-sm">
-                  <span className="font-mono text-[11px] text-muted-foreground">{i.id}</span>
+                <li key={i.id} className="flex items-center gap-3 px-3 py-2.5 text-[13px]">
+                  <span className="font-mono text-[10px] text-muted-foreground">{i.id}</span>
                   <span className="min-w-0 flex-1 truncate text-foreground">{i.title}</span>
-                  <span className="hidden text-xs text-muted-foreground sm:block">{i.district}</span>
+                  <span className="hidden text-[11px] text-muted-foreground sm:block">{i.district}</span>
                   <PriorityBadge priority={i.priority} />
                 </li>
               ))}

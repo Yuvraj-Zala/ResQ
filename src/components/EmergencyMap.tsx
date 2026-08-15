@@ -12,7 +12,7 @@ export function EmergencyMap(props: MapProps) {
   useEffect(() => setMounted(true), []);
 
   return (
-    <div className="relative h-[420px] overflow-hidden rounded-xl border border-border bg-muted/40 lg:h-[520px]">
+    <div className="relative h-[420px] overflow-hidden rounded-sm border border-border bg-muted/40 lg:h-[520px]">
       {mounted ? (
         <Suspense fallback={<MapSkeleton />}>
           <MapClient {...props} />
@@ -21,7 +21,7 @@ export function EmergencyMap(props: MapProps) {
         <MapSkeleton />
       )}
 
-      <div className="pointer-events-none absolute bottom-3 left-3 z-[500] rounded-lg border border-border bg-card/90 px-3 py-2 backdrop-blur">
+      <div className="pointer-events-none absolute bottom-3 left-3 z-[500] rounded-sm border border-border bg-card/90 px-3 py-2 backdrop-blur">
         <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
           Priority
         </p>

@@ -1,4 +1,4 @@
-import { LifeBuoy, HeartPulse, CheckCircle2, Ban, ShieldAlert, Clock, Radio, MapPin } from "lucide-react";
+import { LifeBuoy, HeartPulse, CircleCheck as CheckCircle2, Ban, ShieldAlert, Clock, Radio, MapPin } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -19,11 +19,11 @@ interface Props {
 
 function Meta({ icon: Icon, label, value }: { icon: typeof Clock; label: string; value: string }) {
   return (
-    <div className="rounded-lg border border-border bg-muted/30 px-3 py-2">
-      <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-widest text-muted-foreground">
-        <Icon className="size-3" /> {label}
+    <div className="rounded-sm border border-border bg-muted/30 px-2.5 py-1.5">
+      <div className="flex items-center gap-1.5 text-[9px] uppercase tracking-widest text-muted-foreground">
+        <Icon className="size-2.5" /> {label}
       </div>
-      <p className="mt-1 truncate font-mono text-xs text-foreground">{value}</p>
+      <p className="mt-1 truncate font-mono text-[11px] text-foreground">{value}</p>
     </div>
   );
 }
@@ -35,11 +35,11 @@ export function IncidentActionModal({ post, status, onAction, onOpenChange }: Pr
         {post && (
           <>
             <DialogHeader>
-              <DialogTitle className="flex items-center gap-2 text-base">
-                <span className="font-mono text-xs text-muted-foreground">{post.id}</span>
+              <DialogTitle className="flex items-center gap-2 text-sm">
+                <span className="font-mono text-[11px] text-muted-foreground">{post.id}</span>
                 {post.category} Incident
               </DialogTitle>
-              <DialogDescription className="text-left text-[13px] leading-relaxed text-foreground">
+              <DialogDescription className="text-left text-[12px] leading-relaxed text-foreground">
                 {post.body}
               </DialogDescription>
             </DialogHeader>
@@ -47,11 +47,11 @@ export function IncidentActionModal({ post, status, onAction, onOpenChange }: Pr
             <div className="flex flex-wrap items-center gap-1.5">
               <PriorityBadge priority={post.priority} />
               <span
-                className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ring-1 ${statusBadgeClass[status]}`}
+                className={`rounded-sm px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider ring-1 ${statusBadgeClass[status]}`}
               >
                 {statusLabel[status]}
               </span>
-              <span className="rounded-full bg-muted px-2 py-0.5 font-mono text-[10px] text-muted-foreground">
+              <span className="rounded-sm bg-muted px-1.5 py-0.5 font-mono text-[9px] text-muted-foreground">
                 conf {post.confidence}%
               </span>
             </div>
@@ -78,27 +78,27 @@ export function IncidentActionModal({ post, status, onAction, onOpenChange }: Pr
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
               <button
                 onClick={() => onAction("rescue")}
-                className="inline-flex items-center justify-center gap-2 rounded-lg border border-primary/30 bg-primary/12 px-3 py-2 text-xs font-semibold text-primary transition-colors hover:bg-primary/20"
+                className="inline-flex items-center justify-center gap-2 rounded-sm border border-primary/20 bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary transition-colors hover:bg-primary/15"
               >
-                <LifeBuoy className="size-4" /> Dispatch Rescue Unit
+                <LifeBuoy className="size-3.5" /> Dispatch Rescue Unit
               </button>
               <button
                 onClick={() => onAction("medical")}
-                className="inline-flex items-center justify-center gap-2 rounded-lg border border-caution/30 bg-caution/12 px-3 py-2 text-xs font-semibold text-caution transition-colors hover:bg-caution/20"
+                className="inline-flex items-center justify-center gap-2 rounded-sm border border-caution/20 bg-caution/10 px-3 py-1.5 text-xs font-semibold text-caution transition-colors hover:bg-caution/15"
               >
-                <HeartPulse className="size-4" /> Send Medical Team
+                <HeartPulse className="size-3.5" /> Send Medical Team
               </button>
               <button
                 onClick={() => onAction("resolved")}
-                className="inline-flex items-center justify-center gap-2 rounded-lg border border-success/30 bg-success/12 px-3 py-2 text-xs font-semibold text-success transition-colors hover:bg-success/20"
+                className="inline-flex items-center justify-center gap-2 rounded-sm border border-success/20 bg-success/10 px-3 py-1.5 text-xs font-semibold text-success transition-colors hover:bg-success/15"
               >
-                <CheckCircle2 className="size-4" /> Mark as Resolved
+                <CheckCircle2 className="size-3.5" /> Mark as Resolved
               </button>
               <button
                 onClick={() => onAction("spam")}
-                className="inline-flex items-center justify-center gap-2 rounded-lg border border-border bg-muted/40 px-3 py-2 text-xs font-semibold text-muted-foreground transition-colors hover:bg-muted"
+                className="inline-flex items-center justify-center gap-2 rounded-sm border border-border bg-muted/40 px-3 py-1.5 text-xs font-semibold text-muted-foreground transition-colors hover:bg-muted"
               >
-                <Ban className="size-4" /> Mark as Spam
+                <Ban className="size-3.5" /> Mark as Spam
               </button>
             </div>
           </>

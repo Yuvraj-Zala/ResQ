@@ -16,14 +16,14 @@ export const Route = createFileRoute("/heatmap")({
 
 function Heatmap() {
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       <EmergencyMap />
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {incidents.slice(0, 4).map((i) => (
-          <div key={i.id} className="rounded-xl border border-border bg-card p-4">
-            <p className="text-[11px] uppercase tracking-widest text-muted-foreground">{i.district}</p>
-            <p className="mt-2 font-mono text-2xl text-foreground">{i.people}</p>
-            <p className="text-xs text-muted-foreground">people affected</p>
+          <div key={i.id} className="rounded-sm border border-border bg-card p-3">
+            <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">{i.district}</p>
+            <p className="mt-2 font-mono text-xl font-semibold tabular-nums text-foreground">{i.people}</p>
+            <p className="text-[11px] text-muted-foreground">people affected</p>
           </div>
         ))}
       </div>

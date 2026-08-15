@@ -5,28 +5,14 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/*
- * Design system definition.
- *
- * The @theme inline block maps CSS custom properties to Tailwind utility
- * classes (e.g. --color-primary -> bg-primary, text-primary).
- *
- * The :root and .dark blocks define the actual color values using oklch.
- * All colors MUST use oklch format.
- *
- * To add a new semantic color:
- * 1. Add the variable to :root (light value) and .dark (dark value)
- * 2. Register it in @theme inline as --color-<name>: var(--<name>)
- */
-
 @theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
-  --radius-3xl: calc(var(--radius) + 12px);
-  --radius-4xl: calc(var(--radius) + 16px);
+  --radius-sm: 0.125rem;
+  --radius-md: 0.25rem;
+  --radius-lg: 0.25rem;
+  --radius-xl: 0.375rem;
+  --radius-2xl: 0.375rem;
+  --radius-3xl: 0.5rem;
+  --radius-4xl: 0.5rem;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -68,45 +54,43 @@
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(0.17 0.018 250);
-  --foreground: oklch(0.95 0.008 250);
-  --card: oklch(0.21 0.021 252);
-  --card-foreground: oklch(0.95 0.008 250);
-  --popover: oklch(0.21 0.021 252);
-  --popover-foreground: oklch(0.95 0.008 250);
-  --primary: oklch(0.72 0.15 215);
-  --primary-foreground: oklch(0.16 0.02 250);
-  --secondary: oklch(0.27 0.023 252);
-  --secondary-foreground: oklch(0.95 0.008 250);
-  --muted: oklch(0.26 0.022 252);
-  --muted-foreground: oklch(0.68 0.02 250);
-  --accent: oklch(0.28 0.026 252);
-  --accent-foreground: oklch(0.96 0.008 250);
-  --destructive: oklch(0.66 0.21 25);
-  --destructive-foreground: oklch(0.98 0.005 250);
-  --warning: oklch(0.76 0.16 62);
-  --caution: oklch(0.86 0.15 95);
-  --success: oklch(0.76 0.16 158);
-  --border: oklch(0.29 0.024 252);
-  --input: oklch(0.29 0.024 252);
-  --ring: oklch(0.72 0.15 215);
-  --chart-1: oklch(0.72 0.15 215);
-  --chart-2: oklch(0.66 0.21 25);
-  --chart-3: oklch(0.76 0.16 62);
-  --chart-4: oklch(0.76 0.16 158);
-  --chart-5: oklch(0.86 0.15 95);
-  --sidebar: oklch(0.19 0.02 252);
-  --sidebar-foreground: oklch(0.95 0.008 250);
-  --sidebar-primary: oklch(0.72 0.15 215);
-  --sidebar-primary-foreground: oklch(0.16 0.02 250);
-  --sidebar-accent: oklch(0.27 0.023 252);
-  --sidebar-accent-foreground: oklch(0.96 0.008 250);
-  --sidebar-border: oklch(0.29 0.024 252);
-  --sidebar-ring: oklch(0.72 0.15 215);
+  --radius: 0.25rem;
+  --background: oklch(0.14 0.004 286);
+  --foreground: oklch(0.92 0.004 286);
+  --card: oklch(0.18 0.005 286);
+  --card-foreground: oklch(0.92 0.004 286);
+  --popover: oklch(0.18 0.005 286);
+  --popover-foreground: oklch(0.92 0.004 286);
+  --primary: oklch(0.60 0.11 240);
+  --primary-foreground: oklch(0.98 0.002 286);
+  --secondary: oklch(0.24 0.006 286);
+  --secondary-foreground: oklch(0.92 0.004 286);
+  --muted: oklch(0.22 0.006 286);
+  --muted-foreground: oklch(0.56 0.012 286);
+  --accent: oklch(0.24 0.006 286);
+  --accent-foreground: oklch(0.95 0.004 286);
+  --destructive: oklch(0.63 0.24 27);
+  --destructive-foreground: oklch(0.98 0.005 286);
+  --warning: oklch(0.76 0.18 71);
+  --caution: oklch(0.80 0.14 75);
+  --success: oklch(0.71 0.17 162);
+  --border: oklch(0.27 0.006 286);
+  --input: oklch(0.27 0.006 286);
+  --ring: oklch(0.60 0.11 240);
+  --chart-1: oklch(0.60 0.11 240);
+  --chart-2: oklch(0.63 0.24 27);
+  --chart-3: oklch(0.76 0.18 71);
+  --chart-4: oklch(0.71 0.17 162);
+  --chart-5: oklch(0.80 0.14 75);
+  --sidebar: oklch(0.16 0.005 286);
+  --sidebar-foreground: oklch(0.92 0.004 286);
+  --sidebar-primary: oklch(0.60 0.11 240);
+  --sidebar-primary-foreground: oklch(0.98 0.002 286);
+  --sidebar-accent: oklch(0.24 0.006 286);
+  --sidebar-accent-foreground: oklch(0.95 0.004 286);
+  --sidebar-border: oklch(0.27 0.006 286);
+  --sidebar-ring: oklch(0.60 0.11 240);
 }
-
-
 
 @layer base {
   * {
@@ -133,5 +117,5 @@
 .leaflet-popup-tip {
   background: var(--color-card);
   color: var(--color-foreground);
-  border-radius: 0.5rem;
+  border-radius: 0.125rem;
 }
