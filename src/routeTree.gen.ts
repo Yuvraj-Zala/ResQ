@@ -10,33 +10,80 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DispatchCenterRouteImport } from './routes/dispatch-center'
+import { Route as HeatmapRouteImport } from './routes/heatmap'
+import { Route as IncidentLogsRouteImport } from './routes/incident-logs'
+import { Route as LiveFeedsRouteImport } from './routes/live-feeds'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DispatchCenterRoute = DispatchCenterRouteImport.update({
+  id: '/dispatch-center',
+  path: '/dispatch-center',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HeatmapRoute = HeatmapRouteImport.update({
+  id: '/heatmap',
+  path: '/heatmap',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IncidentLogsRoute = IncidentLogsRouteImport.update({
+  id: '/incident-logs',
+  path: '/incident-logs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LiveFeedsRoute = LiveFeedsRouteImport.update({
+  id: '/live-feeds',
+  path: '/live-feeds',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/dispatch-center': typeof DispatchCenterRoute
+  '/heatmap': typeof HeatmapRoute
+  '/incident-logs': typeof IncidentLogsRoute
+  '/live-feeds': typeof LiveFeedsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/dispatch-center': typeof DispatchCenterRoute
+  '/heatmap': typeof HeatmapRoute
+  '/incident-logs': typeof IncidentLogsRoute
+  '/live-feeds': typeof LiveFeedsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/dispatch-center': typeof DispatchCenterRoute
+  '/heatmap': typeof HeatmapRoute
+  '/incident-logs': typeof IncidentLogsRoute
+  '/live-feeds': typeof LiveFeedsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    '/' | '/dispatch-center' | '/heatmap' | '/incident-logs' | '/live-feeds'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/dispatch-center' | '/heatmap' | '/incident-logs' | '/live-feeds'
+  id:
+    | '__root__'
+    | '/'
+    | '/dispatch-center'
+    | '/heatmap'
+    | '/incident-logs'
+    | '/live-feeds'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DispatchCenterRoute: typeof DispatchCenterRoute
+  HeatmapRoute: typeof HeatmapRoute
+  IncidentLogsRoute: typeof IncidentLogsRoute
+  LiveFeedsRoute: typeof LiveFeedsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +95,43 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dispatch-center': {
+      id: '/dispatch-center'
+      path: '/dispatch-center'
+      fullPath: '/dispatch-center'
+      preLoaderRoute: typeof DispatchCenterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/heatmap': {
+      id: '/heatmap'
+      path: '/heatmap'
+      fullPath: '/heatmap'
+      preLoaderRoute: typeof HeatmapRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/incident-logs': {
+      id: '/incident-logs'
+      path: '/incident-logs'
+      fullPath: '/incident-logs'
+      preLoaderRoute: typeof IncidentLogsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/live-feeds': {
+      id: '/live-feeds'
+      path: '/live-feeds'
+      fullPath: '/live-feeds'
+      preLoaderRoute: typeof LiveFeedsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DispatchCenterRoute: DispatchCenterRoute,
+  HeatmapRoute: HeatmapRoute,
+  IncidentLogsRoute: IncidentLogsRoute,
+  LiveFeedsRoute: LiveFeedsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
