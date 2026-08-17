@@ -6,14 +6,14 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  /* ── Radius scale (DESIGN.md rounded tokens) ─────────────────────────────── */
-  --radius-xs:  0.3125rem;   /* 5px  – xs  */
-  --radius-sm:  0.5rem;      /* 8px  – sm  */
-  --radius-md:  0.6875rem;   /* 11px – md  */
-  --radius-lg:  1.125rem;    /* 18px – lg / store-utility-card */
-  --radius-xl:  1.125rem;
-  --radius-2xl: 1.125rem;
-  --radius-3xl: 1.125rem;
+  /* ── Radius scale — compact, operational ──────────────────────────────────── */
+  --radius-xs:  0.125rem;   /* 2px  */
+  --radius-sm:  0.25rem;    /* 4px  */
+  --radius-md:  0.375rem;   /* 6px  */
+  --radius-lg:  0.5rem;     /* 8px  */
+  --radius-xl:  0.5rem;
+  --radius-2xl: 0.5rem;
+  --radius-3xl: 0.5rem;
   --radius-4xl: 9999px;
 
   /* ── Semantic color tokens ───────────────────────────────────────────────── */
@@ -47,83 +47,83 @@
   --color-sidebar-primary:      var(--sidebar-primary);
   --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
   --color-sidebar-accent:       var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent-foreground:  var(--sidebar-accent-foreground);
   --color-sidebar-border:       var(--sidebar-border);
   --color-sidebar-ring:         var(--sidebar-ring);
   --color-warning:              var(--warning);
   --color-caution:              var(--caution);
   --color-success:              var(--success);
 
-  /* ── DESIGN.md named tokens ──────────────────────────────────────────────── */
-  --color-ink:                  #1d1d1f;
-  --color-parchment:            #f5f5f7;
-  --color-pearl:                #fafafc;
-  --color-hairline:             #e0e0e0;
-  --color-divider-soft:         #f0f0f0;
-  --color-action-blue:          #0066cc;
-  --color-action-blue-focus:    #0071e3;
-  --color-action-blue-dark:     #2997ff;
-  --color-tile-1:               #272729;
-  --color-tile-2:               #2a2a2c;
-  --color-tile-3:               #252527;
-  --color-surface-black:        #000000;
+  /* ── EOC named tokens ────────────────────────────────────────────────────── */
+  --color-ink:                  #e5e7eb;
+  --color-parchment:            #f3f4f6;
+  --color-pearl:                #f9fafb;
+  --color-hairline:             #1f2937;
+  --color-divider-soft:         #111827;
+  --color-action-blue:          #2563eb;
+  --color-action-blue-focus:    #3b82f6;
+  --color-action-blue-dark:     #60a5fa;
+  --color-tile-1:               #151e28;
+  --color-tile-2:               #19232e;
+  --color-tile-3:               #0f1722;
+  --color-surface-black:        #0B1117;
 
   /* ── Typography ──────────────────────────────────────────────────────────── */
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
-  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
+  --font-sans: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 :root {
   --radius: 0px;
 
-  /* ── Surface palette (near-black tile system, DESIGN.md) ────────────────── */
-  --background:           #1d1d1f;          /* ink – primary dark surface     */
-  --foreground:           #ffffff;          /* body-on-dark                   */
-  --card:                 #272729;          /* surface-tile-1                 */
-  --card-foreground:      #ffffff;
-  --popover:              #272729;          /* surface-tile-1                 */
-  --popover-foreground:   #ffffff;
+  /* ── Surface palette — deep navy / charcoal EOC ──────────────────────────── */
+  --background:           #0B1117;
+  --foreground:           #e5e7eb;
+  --card:                 #151E28;
+  --card-foreground:      #e5e7eb;
+  --popover:              #151E28;
+  --popover-foreground:   #e5e7eb;
 
-  /* ── Action Blue (the one and only brand accent) ─────────────────────────── */
-  --primary:              #0066cc;
+  /* ── Primary — operational blue ──────────────────────────────────────────── */
+  --primary:              #2563eb;
   --primary-foreground:   #ffffff;
 
   /* ── Secondary / muted surfaces ─────────────────────────────────────────── */
-  --secondary:            #252527;          /* surface-tile-3                 */
-  --secondary-foreground: #ffffff;
-  --muted:                #2a2a2c;          /* surface-tile-2                 */
-  --muted-foreground:     #cccccc;          /* body-muted                     */
-  --accent:               #272729;          /* surface-tile-1 for hover state */
-  --accent-foreground:    #ffffff;
+  --secondary:            #0f1722;
+  --secondary-foreground: #94a3b8;
+  --muted:                #19232e;
+  --muted-foreground:     #64748b;
+  --accent:               #151E28;
+  --accent-foreground:    #e5e7eb;
 
-  /* ── Borders ─────────────────────────────────────────────────────────────── */
-  --border:               rgba(255, 255, 255, 0.10);
-  --input:                rgba(255, 255, 255, 0.10);
-  --ring:                 #0066cc;
+  /* ── Borders — subtle blue-gray ─────────────────────────────────────────── */
+  --border:               rgba(148, 163, 184, 0.12);
+  --input:                rgba(148, 163, 184, 0.12);
+  --ring:                 #2563eb;
 
-  /* ── Emergency severity colours (kept – operational meaning) ─────────────── */
-  --destructive:          oklch(0.63 0.24 27);
+  /* ── Operational severity — semantic only ────────────────────────────────── */
+  --destructive:          #dc2626;
   --destructive-foreground: #ffffff;
-  --warning:              oklch(0.76 0.18 71);
-  --caution:              oklch(0.80 0.14 75);
-  --success:              oklch(0.71 0.17 162);
+  --warning:              #d97706;
+  --caution:              #eab308;
+  --success:              #16a34a;
 
   /* ── Charts ──────────────────────────────────────────────────────────────── */
-  --chart-1:              #0066cc;
-  --chart-2:              oklch(0.63 0.24 27);
-  --chart-3:              oklch(0.76 0.18 71);
-  --chart-4:              oklch(0.71 0.17 162);
-  --chart-5:              oklch(0.80 0.14 75);
+  --chart-1:              #2563eb;
+  --chart-2:              #dc2626;
+  --chart-3:              #d97706;
+  --chart-4:              #16a34a;
+  --chart-5:              #eab308;
 
-  /* ── Sidebar – surface-black (global-nav spec) ───────────────────────────── */
-  --sidebar:              #000000;
-  --sidebar-foreground:   #ffffff;
-  --sidebar-primary:      #0066cc;
+  /* ── Sidebar — deepest navy ─────────────────────────────────────────────── */
+  --sidebar:              #080d14;
+  --sidebar-foreground:   #94a3b8;
+  --sidebar-primary:      #3b82f6;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent:       #1d1d1f;
-  --sidebar-accent-foreground:  #ffffff;
-  --sidebar-border:       rgba(255, 255, 255, 0.08);
-  --sidebar-ring:         #0066cc;
+  --sidebar-accent:       #111923;
+  --sidebar-accent-foreground:  #e5e7eb;
+  --sidebar-border:       rgba(148, 163, 184, 0.08);
+  --sidebar-ring:         #3b82f6;
 }
 
 @layer base {
@@ -135,84 +135,109 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
-    /* DESIGN.md: body at 17px, -0.374px tracking */
-    font-size: 17px;
-    line-height: 1.47;
-    letter-spacing: -0.022em;
+    font-size: 14px;
+    line-height: 1.5;
+    letter-spacing: 0.01em;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* ── Apple "tight" display heading tracking ──────────────────────────────── */
-  h1, h2, h3 {
+  h1, h2, h3, h4, h5, h6 {
     font-weight: 600;
-    letter-spacing: -0.022em;
+    letter-spacing: -0.01em;
+    color: #f1f5f9;
   }
 }
 
-/* ── Apple pill CTA utility ──────────────────────────────────────────────── */
-.btn-pill {
+/* ── Operational button utilities ──────────────────────────────────────────── */
+.btn-primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.375rem;
-  border-radius: 9999px;
-  background-color: #0066cc;
+  border-radius: 4px;
+  background-color: #2563eb;
   color: #ffffff;
-  font-size: 0.875rem;
-  font-weight: 400;
-  letter-spacing: -0.014em;
-  padding: 0.5rem 1.25rem;
-  transition: transform 0.12s ease, background-color 0.12s ease;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 12px;
+  transition: background-color 0.15s ease;
+  cursor: pointer;
 }
-.btn-pill:active { transform: scale(0.95); }
+.btn-primary:hover { background-color: #1d4ed8; }
+.btn-primary:active { background-color: #1e40af; }
 
-.btn-pill-ghost {
-  background: transparent;
-  border: 1px solid #0066cc;
-  color: #0066cc;
-}
-.btn-pill-ghost:active { transform: scale(0.95); }
-
-.btn-dark-utility {
+.btn-danger {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.375rem;
-  border-radius: 0.5rem; /* rounded.sm */
-  background-color: #1d1d1f;
+  border-radius: 4px;
+  background-color: #dc2626;
   color: #ffffff;
-  font-size: 0.875rem;
-  font-weight: 400;
-  letter-spacing: -0.014em;
-  padding: 0.5rem 0.9375rem;
-  transition: transform 0.12s ease;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 12px;
+  transition: background-color 0.15s ease;
+  cursor: pointer;
 }
-.btn-dark-utility:active { transform: scale(0.95); }
+.btn-danger:hover { background-color: #b91c1c; }
 
-/* ── Utility card (store-utility-card) ───────────────────────────────────── */
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  border-radius: 4px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  background-color: transparent;
+  color: #94a3b8;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 12px;
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+.btn-secondary:hover {
+  background-color: rgba(148, 163, 184, 0.08);
+  color: #e5e7eb;
+}
+
+/* ── Utility card ─────────────────────────────────────────────────────────── */
 .utility-card {
-  background-color: #272729;
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  border-radius: 1.125rem; /* rounded.lg */
-  padding: 1.5rem;
+  background-color: #151E28;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 6px;
+  padding: 16px;
 }
 
-/* ── Leaflet overrides ───────────────────────────────────────────────────── */
+/* ── Section label (EOC micro-label) ─────────────────────────────────────── */
+.eoc-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #475569;
+  line-height: 1;
+}
+
+/* ── Leaflet overrides — dark navy ────────────────────────────────────────── */
 .leaflet-container {
-  background: #1d1d1f;
+  background: #0B1117;
   font-family: var(--font-sans);
 }
 .leaflet-control-attribution,
 .leaflet-bar a {
-  background: #272729 !important;
-  color: #cccccc !important;
-  border-color: rgba(255,255,255,0.10) !important;
+  background: #151E28 !important;
+  color: #64748b !important;
+  border-color: rgba(148, 163, 184, 0.12) !important;
 }
 .leaflet-popup-content-wrapper,
 .leaflet-popup-tip {
-  background: #272729;
-  color: #ffffff;
-  border-radius: 0.5rem;
-  border: 1px solid rgba(255,255,255,0.10);
-  box-shadow: none;
+  background: #151E28;
+  color: #e5e7eb;
+  border-radius: 4px;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }

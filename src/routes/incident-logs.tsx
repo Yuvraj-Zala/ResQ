@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Search } from "lucide-react";
 import { PriorityBadge } from "@/components/PriorityBadge";
 import { incidents } from "@/lib/incidents";
+import { statusColor } from "@/lib/ops";
 
 export const Route = createFileRoute("/incident-logs")({
   head: () => ({
@@ -19,38 +21,65 @@ export const Route = createFileRoute("/incident-logs")({
 
 function Logs() {
   return (
-    <div className="overflow-hidden rounded-[18px] border border-white/10 bg-[#272729]">
-      <table className="w-full text-[13px]">
-        <thead>
-          <tr
-            className="border-b border-white/8 text-left font-mono uppercase text-white/40"
-            style={{ fontSize: 9, letterSpacing: "0.08em" }}
-          >
-            <th className="px-4 py-3 font-medium">ID</th>
-            <th className="px-4 py-3 font-medium">Incident</th>
-            <th className="hidden px-4 py-3 font-medium sm:table-cell">Type</th>
-            <th className="hidden px-4 py-3 font-medium md:table-cell">District</th>
-            <th className="px-4 py-3 font-medium">Priority</th>
-            <th className="px-4 py-3 text-right font-medium">Age</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-white/6">
-          {incidents.map((i) => (
-            <tr key={i.id} className="transition-colors hover:bg-white/4">
-              <td className="px-4 py-3 font-mono text-[10px] text-white/40">{i.id}</td>
-              <td className="px-4 py-3 text-white/85">{i.title}</td>
-              <td className="hidden px-4 py-3 text-white/50 sm:table-cell">{i.type}</td>
-              <td className="hidden px-4 py-3 text-white/50 md:table-cell">{i.district}</td>
-              <td className="px-4 py-3">
-                <PriorityBadge priority={i.priority} />
-              </td>
-              <td className="px-4 py-3 text-right font-mono text-[11px] text-white/40">
-                {i.minutesAgo}m
-              </td>
+    <div className="space-y-3 overflow-x-hidden">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+            Incident Registry
+          </p>
+          <h2 className="text-[13px] font-semibold text-foreground mt-0.5">
+            All Reported Incidents
+          </h2>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="relative">
+            <Search className="absolute left-2 top-1/2 size-3 -translate-y-1/2 text-muted-foreground" />
+            <input
+              type="text"
+              placeholder="Search incidents..."
+              className="rounded border border-border bg-muted/30 pl-7 pr-2 py-1.5 text-[11px] text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-primary w-48"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="overflow-x-auto rounded border border-border bg-card">
+        <table className="w-full text-[12px]">
+          <thead>
+            <tr className="border-b border-border text-left">
+              <th className="px-3 py-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">ID</th>
+              <th className="px-3 py-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Incident</th>
+              <th className="hidden px-3 py-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground sm:table-cell">Type</th>
+              <th className="hidden px-3 py-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground md:table-cell">District</th>
+              <th className="px-3 py-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Severity</th>
+              <th className="hidden px-3 py-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground lg:table-cell">Status</th>
+              <th className="px-3 py-2 text-right text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Age</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody className="divide-y divide-border">
+            {incidents.map((i) => (
+              <tr key={i.id} className="transition-colors hover:bg-white/[0.02]">
+                <td className="px-3 py-2 font-mono text-[10px] text-muted-foreground">{i.id}</td>
+                <td className="px-3 py-2 text-foreground font-medium">{i.title}</td>
+                <td className="hidden px-3 py-2 text-muted-foreground sm:table-cell">{i.type}</td>
+                <td className="hidden px-3 py-2 text-muted-foreground md:table-cell">{i.district}</td>
+                <td className="px-3 py-2">
+                  <PriorityBadge priority={i.priority} />
+                </td>
+                <td className="hidden px-3 py-2 lg:table-cell">
+                  <span className="inline-flex items-center gap-1 text-[10px] text-muted-foreground">
+                    <span className="size-1.5 rounded-full" style={{ backgroundColor: statusColor.new }} />
+                    Active
+                  </span>
+                </td>
+                <td className="px-3 py-2 text-right font-mono text-[10px] text-muted-foreground">
+                  {i.minutesAgo}m
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

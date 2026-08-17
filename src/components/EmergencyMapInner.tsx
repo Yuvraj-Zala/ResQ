@@ -58,9 +58,9 @@ const hospitalIcon = divIcon({
   className: "rescuai-facility-icon",
   html: `<div style="
     width: 26px; height: 26px; border-radius: 50%;
-    background: #0066cc; border: 2px solid #ffffff;
+    background: #2563eb; border: 2px solid #e5e7eb;
     display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.45), 0 2px 6px rgba(0,0,0,0.5);
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.45), 0 2px 6px rgba(0,0,0,0.5);
   ">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z" fill="#ffffff"/>
@@ -75,13 +75,13 @@ const shieldIcon = divIcon({
   className: "rescuai-facility-icon",
   html: `<div style="
     width: 24px; height: 28px;
-    background: #ffffff; border: 2px solid #0066cc;
+    background: #16a34a; border: 2px solid #e5e7eb;
     display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.35), 0 2px 6px rgba(0,0,0,0.5);
-    border-radius: 6px 6px 10px 10px;
+    box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.35), 0 2px 6px rgba(0,0,0,0.5);
+    border-radius: 4px 4px 6px 6px;
   ">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z" fill="#0066cc"/>
+      <path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z" fill="#ffffff"/>
     </svg>
   </div>`,
   iconSize: [24, 28],
@@ -110,7 +110,7 @@ export default function EmergencyMapClient({
       zoom={12}
       scrollWheelZoom={false}
       className="h-full w-full"
-      style={{ background: "#1d1d1f" }}
+      style={{ background: "#0B1117" }}
     >
       <TileLayer
         attribution="&copy; OpenStreetMap &copy; CARTO"
@@ -125,8 +125,8 @@ export default function EmergencyMapClient({
             key={`flood-${i}`}
             positions={zone}
             pathOptions={{
-              color: "#0066cc",
-              fillColor: "#0066cc",
+              color: "#2563eb",
+              fillColor: "#2563eb",
               fillOpacity: 0.12,
               weight: 1,
               dashArray: "6 4",
@@ -134,7 +134,7 @@ export default function EmergencyMapClient({
           >
             <Popup>
               <div style={{ minWidth: 150, fontFamily: "monospace", fontSize: "11px" }}>
-                <strong style={{ color: "#2997ff" }}>
+                <strong style={{ color: "#3b82f6" }}>
                   FLOOD RISK ZONE {String.fromCharCode(65 + i)}
                 </strong>
                 <div style={{ opacity: 0.7, marginTop: "4px" }}>
@@ -156,7 +156,7 @@ export default function EmergencyMapClient({
                 <strong>{f.name}</strong>
                 <span
                   style={{
-                    color: "#2997ff",
+                    color: "#3b82f6",
                     textTransform: "uppercase",
                     fontSize: "9px",
                     fontWeight: "bold",
@@ -169,13 +169,13 @@ export default function EmergencyMapClient({
                 style={{
                   marginTop: "6px",
                   padding: "4px",
-                  background: "rgba(0, 102, 204, 0.12)",
+                  background: "rgba(37, 99, 235, 0.1)",
                   borderRadius: "4px",
-                  border: "1px solid rgba(0, 102, 204, 0.25)",
+                  border: "1px solid rgba(37, 99, 235, 0.2)",
                   fontSize: "10px",
                 }}
               >
-                <span style={{ color: "#2997ff", fontWeight: "bold" }}>BEDS AVAILABLE: </span>
+                <span style={{ color: "#3b82f6", fontWeight: "bold" }}>BEDS: </span>
                 {f.bedsAvailable}
               </div>
             </div>
@@ -248,7 +248,7 @@ export default function EmergencyMapClient({
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
-                    borderBottom: "1px solid rgba(255,255,255,0.1)",
+                    borderBottom: "1px solid rgba(148, 163, 184, 0.12)",
                     paddingBottom: "3px",
                   }}
                 >
@@ -270,8 +270,8 @@ export default function EmergencyMapClient({
                 </div>
 
                 {p.locationDetected && (
-                  <div style={{ marginTop: "5px", color: "#2997ff", fontSize: "10px" }}>
-                    📍 {p.locationDetected}
+                  <div style={{ marginTop: "5px", color: "#3b82f6", fontSize: "10px" }}>
+                    {p.locationDetected}
                   </div>
                 )}
 
@@ -280,13 +280,13 @@ export default function EmergencyMapClient({
                     style={{
                       marginTop: "4px",
                       padding: "4px",
-                      background: "rgba(0, 102, 204, 0.12)",
+                      background: "rgba(37, 99, 235, 0.1)",
                       borderRadius: "4px",
-                      border: "1px solid rgba(0, 102, 204, 0.25)",
+                      border: "1px solid rgba(37, 99, 235, 0.2)",
                       fontSize: "9px",
                     }}
                   >
-                    <span style={{ color: "#2997ff", fontWeight: "bold" }}>ACTION: </span>
+                    <span style={{ color: "#3b82f6", fontWeight: "bold" }}>ACTION: </span>
                     {p.recommendedAction}
                   </div>
                 )}
@@ -308,7 +308,7 @@ export default function EmergencyMapClient({
                   <div
                     style={{
                       marginTop: "4px",
-                      color: "#f59e0b",
+                      color: "#d97706",
                       fontSize: "9px",
                       fontWeight: "bold",
                     }}

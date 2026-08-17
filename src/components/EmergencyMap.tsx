@@ -1,5 +1,5 @@
 import { Suspense, lazy, useEffect, useState } from "react";
-import { Waves } from "lucide-react";
+import { Layers } from "lucide-react";
 import { priorityColor, priorityLabel, type Priority } from "@/lib/incidents";
 import { statusColor, statusLabel } from "@/lib/ops";
 import type { MapProps } from "./EmergencyMapInner";
@@ -14,8 +14,7 @@ export function EmergencyMap(props: MapProps) {
   useEffect(() => setMounted(true), []);
 
   return (
-    /* store-utility-card spec: tile-1, hairline border, rounded-lg (18px) */
-    <div className="relative h-[420px] overflow-hidden rounded-[18px] border border-white/10 bg-[#272729] lg:h-[520px]">
+    <div className="relative h-[360px] overflow-hidden rounded border border-border bg-card lg:h-[480px]">
       {mounted ? (
         <Suspense fallback={<MapSkeleton />}>
           <MapClient {...props} showFloodZones={showFloodZones} />
@@ -24,68 +23,52 @@ export function EmergencyMap(props: MapProps) {
         <MapSkeleton />
       )}
 
-      {/* Tactical legend — utility card bottom left */}
-      <div className="pointer-events-none absolute bottom-3 left-3 z-[500] rounded-[11px] border border-white/10 bg-[#272729]/95 px-3 py-2 backdrop-blur">
-        <p
-          className="mb-1.5 font-mono font-semibold uppercase text-white/40"
-          style={{ fontSize: 9, letterSpacing: "0.08em", lineHeight: 1 }}
-        >
-          [LEGEND_PRIORITY]
-        </p>
+      {/* ── Map legend ─────────────────────────────────────────────────────── */}
+      <div className="pointer-events-none absolute bottom-3 left-3 z-[500] rounded border border-border bg-[#0B1117]/95 px-3 py-2 backdrop-blur">
+        <p className="eoc-label mb-1.5">Severity</p>
         <div className="flex flex-col gap-0.5">
           {legend.map((p) => (
-            <div key={p} className="flex items-center gap-2 font-mono text-[10px] text-white/70">
-              <span className="size-2 rounded-full" style={{ backgroundColor: priorityColor[p] }} />
+            <div key={p} className="flex items-center gap-2 text-[10px] text-muted-foreground">
+              <span className="size-2 rounded-sm" style={{ backgroundColor: priorityColor[p] }} />
               {priorityLabel[p]}
             </div>
           ))}
         </div>
-        <div className="my-1.5 h-px bg-white/8" />
-        <p
-          className="mb-1 font-mono font-semibold uppercase text-white/40"
-          style={{ fontSize: 9, letterSpacing: "0.08em", lineHeight: 1 }}
-        >
-          [LEGEND_STATUS]
-        </p>
+        <div className="my-1.5 h-px bg-border" />
+        <p className="eoc-label mb-1">Status</p>
         <div className="flex flex-col gap-0.5">
-          {(["rescue", "medical", "resolved", "spam"] as const).map((s) => (
-            <div key={s} className="flex items-center gap-2 font-mono text-[10px] text-white/70">
-              <span className="size-2 rounded-full" style={{ backgroundColor: statusColor[s] }} />
+          {(["rescue", "medical", "resolved"] as const).map((s) => (
+            <div key={s} className="flex items-center gap-2 text-[10px] text-muted-foreground">
+              <span className="size-2 rounded-sm" style={{ backgroundColor: statusColor[s] }} />
               {statusLabel[s]}
             </div>
           ))}
         </div>
-        <div className="my-1.5 h-px bg-white/8" />
-        <p
-          className="mb-1 font-mono font-semibold uppercase text-white/40"
-          style={{ fontSize: 9, letterSpacing: "0.08em", lineHeight: 1 }}
-        >
-          [LEGEND_FACILITY]
-        </p>
+        <div className="my-1.5 h-px bg-border" />
+        <p className="eoc-label mb-1">Facilities</p>
         <div className="flex flex-col gap-0.5">
-          <div className="flex items-center gap-2 font-mono text-[10px] text-white/70">
-            <span className="inline-block size-2.5 rounded-full border-2 border-white bg-[#0066cc]" />
+          <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+            <span className="inline-block size-2 rounded-sm border-2 border-primary bg-primary/30" />
             Hospital
           </div>
-          <div className="flex items-center gap-2 font-mono text-[10px] text-white/70">
-            <span className="inline-block h-2.5 w-2 rounded-sm border-2 border-[#0066cc] bg-white" />
-            Relief / Shelter
+          <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+            <span className="inline-block size-2 rounded-sm border-2 border-success bg-success/30" />
+            Shelter / Relief
           </div>
         </div>
       </div>
 
-      {/* Flood zone toggle — dark utility button top right */}
+      {/* ── Layer toggle ───────────────────────────────────────────────────── */}
       <button
         onClick={() => setShowFloodZones((v) => !v)}
-        className={`absolute right-3 top-3 z-[500] flex items-center gap-1.5 rounded-[8px] border px-2.5 py-1.5 font-mono text-[9px] uppercase tracking-widest transition-colors cursor-pointer ${
+        className={`absolute right-3 top-3 z-[500] flex items-center gap-1.5 rounded border px-2 py-1 text-[10px] font-medium uppercase tracking-wider transition-colors cursor-pointer ${
           showFloodZones
-            ? "border-[#0066cc]/40 bg-[#0066cc]/15 text-[#2997ff]"
-            : "border-white/10 bg-[#272729]/90 text-white/50 hover:text-white"
+            ? "border-primary/40 bg-primary/10 text-primary"
+            : "border-border bg-[#0B1117]/90 text-muted-foreground hover:text-foreground"
         }`}
       >
-        <Waves className="size-3" />
-        Flood Risk Zones
-        {showFloodZones && <span className="size-1.5 animate-pulse rounded-full bg-[#2997ff]" />}
+        <Layers className="size-3" />
+        Flood Zones
       </button>
     </div>
   );
@@ -93,8 +76,8 @@ export function EmergencyMap(props: MapProps) {
 
 function MapSkeleton() {
   return (
-    <div className="grid h-full w-full place-items-center font-mono text-xs text-white/40">
-      [INIT_MAP] Loading tactical map...
+    <div className="grid h-full w-full place-items-center text-[11px] text-muted-foreground">
+      Loading tactical map...
     </div>
   );
 }

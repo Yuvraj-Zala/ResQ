@@ -7,7 +7,6 @@ import {
   Clock,
   Radio,
   MapPin,
-  Sparkles,
   Bot,
   WifiOff,
   Navigation,
@@ -25,14 +24,12 @@ import { aiCategoryBadgeClass, type AICategory } from "@/services/aiClassifier";
 import { useOfflineMesh } from "@/context/OfflineMeshContext";
 import type { SimPost } from "@/lib/simulator";
 
-// ─── Emergency Response Hubs ────────────────────────────────────────────────
 const RESPONSE_HUBS = [
   { name: "Navrangpura Fire Station", short: "Navrangpura Fire", lat: 23.0356, lng: 72.5622 },
   { name: "Paldi NDRF Base", short: "Paldi NDRF", lat: 23.0073, lng: 72.5726 },
   { name: "Sabarmati Rescue HQ", short: "Sabarmati HQ", lat: 23.0748, lng: 72.5714 },
 ] as const;
 
-/** Haversine great-circle distance in km */
 function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
   const R = 6371;
   const dLat = ((lat2 - lat1) * Math.PI) / 180;
@@ -46,7 +43,6 @@ function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number): nu
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
-/** Find nearest hub and compute ETA at 40 km/h urban speed */
 function nearestHubInfo(lat: number, lng: number) {
   type Hub = (typeof RESPONSE_HUBS)[number];
   let bestHub: Hub = RESPONSE_HUBS[0];
@@ -61,7 +57,6 @@ function nearestHubInfo(lat: number, lng: number) {
   const etaMins = Math.ceil((bestDist / 40) * 60);
   return { hubName: bestHub.short, distKm: bestDist.toFixed(1), etaMins };
 }
-// ─────────────────────────────────────────────────────────────────────────────
 
 interface Props {
   post: SimPost | null;
@@ -72,15 +67,11 @@ interface Props {
 
 function Meta({ icon: Icon, label, value }: { icon: typeof Clock; label: string; value: string }) {
   return (
-    /* utility card: tile-1, hairline border, rounded-md (11px) */
-    <div className="rounded-[11px] border border-white/10 bg-white/4 px-3 py-2">
-      <div
-        className="flex items-center gap-1.5 uppercase text-white/40"
-        style={{ fontSize: 9, fontWeight: 600, letterSpacing: "0.08em", lineHeight: 1 }}
-      >
-        <Icon className="size-3 text-[#2997ff]" /> {label}
+    <div className="rounded border border-border bg-muted/30 px-2.5 py-1.5">
+      <div className="flex items-center gap-1 text-[9px] font-medium uppercase tracking-wider text-muted-foreground">
+        <Icon className="size-2.5 text-primary" /> {label}
       </div>
-      <p className="mt-1.5 truncate font-mono text-[11px] text-white/85">{value}</p>
+      <p className="mt-1 truncate font-mono text-[11px] text-foreground">{value}</p>
     </div>
   );
 }
@@ -91,7 +82,6 @@ export function IncidentActionModal({ post, status, onAction, onOpenChange }: Pr
   let saveOfflineStatus: ((id: string, status: IncidentStatus) => void) | null = null;
 
   try {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     const mesh = useOfflineMesh();
     isMeshMode = mesh.isMeshMode;
     meshNodeId = mesh.meshNodeId;
@@ -117,147 +107,117 @@ export function IncidentActionModal({ post, status, onAction, onOpenChange }: Pr
 
   return (
     <Dialog open={!!post} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-lg rounded border border-border bg-card">
         <DialogHeader>
-          <DialogTitle className="flex items-center justify-between gap-2 text-sm">
+          <DialogTitle className="flex items-center justify-between gap-2 text-[13px]">
             <div className="flex items-center gap-2">
-              <span className="font-mono text-[11px] text-white/40">{post.id}</span>
-              <span
-                className="text-white"
-                style={{ fontSize: 15, fontWeight: 600, letterSpacing: "-0.374px" }}
-              >
-                {categoryName}
-              </span>
+              <span className="font-mono text-[11px] text-muted-foreground">{post.id}</span>
+              <span className="font-semibold text-foreground">{categoryName}</span>
             </div>
             <div className="flex items-center gap-1.5">
               {isMeshMode && (
-                <span className="inline-flex items-center gap-1 rounded-[11px] border border-[#0066cc]/30 bg-[#0066cc]/10 px-2 py-0.5 font-mono text-[9px] text-[#2997ff]">
+                <span className="inline-flex items-center gap-1 rounded border border-primary/20 bg-primary/5 px-1.5 py-0.5 font-mono text-[9px] text-primary">
                   <WifiOff className="size-2.5" /> [{meshNodeId}]
                 </span>
               )}
-              <span className="inline-flex items-center gap-1 rounded-[11px] bg-[#0066cc]/10 px-2 py-0.5 font-mono text-[9px] text-[#2997ff]">
-                <Bot className="size-3" /> Gemini AI
+              <span className="inline-flex items-center gap-1 rounded border border-primary/20 bg-primary/5 px-1.5 py-0.5 font-mono text-[9px] text-primary">
+                <Bot className="size-2.5" /> AI Classified
               </span>
             </div>
           </DialogTitle>
-          <DialogDescription
-            className="pt-1 text-left text-white/80"
-            style={{ fontSize: 14, lineHeight: 1.47, letterSpacing: "-0.224px" }}
-          >
+          <DialogDescription className="pt-1 text-left text-[12px] leading-relaxed text-muted-foreground">
             {post.body}
           </DialogDescription>
         </DialogHeader>
 
-        {/* AI Recommendation Banner — Action Blue inline callout */}
         {post.recommendedAction && (
-          <div className="rounded-[11px] border border-[#0066cc]/20 bg-[#0066cc]/6 p-3 text-[13px]">
-            <div
-              className="flex items-center gap-1.5 font-mono font-semibold uppercase text-[#2997ff]"
-              style={{ fontSize: 9, letterSpacing: "0.08em", lineHeight: 1 }}
-            >
-              <Sparkles className="size-3" /> AI Recommended Response:
-            </div>
-            <p className="mt-1.5 leading-relaxed text-white/85 font-medium">
+          <div className="rounded border border-primary/15 bg-primary/5 p-2.5">
+            <p className="text-[9px] font-medium uppercase tracking-wider text-primary">
+              Recommended Action
+            </p>
+            <p className="mt-1 text-[12px] leading-relaxed text-foreground font-medium">
               {post.recommendedAction}
             </p>
           </div>
         )}
 
-        {/* Badges — pearl-capsule grammar */}
-        <div className="flex flex-wrap items-center gap-1.5">
+        <div className="flex flex-wrap items-center gap-1">
           <PriorityBadge priority={post.priority} />
-          <span
-            className={`rounded-[11px] border px-2.5 py-0.5 ${categoryStyle}`}
-            style={{ fontSize: 11, fontWeight: 600, letterSpacing: "-0.224px", lineHeight: 1.29 }}
-          >
+          <span className={`rounded border px-1.5 py-0.5 text-[10px] font-medium ${categoryStyle}`}>
             {categoryName}
           </span>
           <span
-            className={`rounded-[11px] border px-2.5 py-0.5 ${statusBadgeClass[status]}`}
-            style={{ fontSize: 11, fontWeight: 600, letterSpacing: "-0.224px", lineHeight: 1.29 }}
+            className={`rounded border px-1.5 py-0.5 text-[10px] font-medium ${statusBadgeClass[status]}`}
           >
             {statusLabel[status]}
           </span>
-          <span className="rounded-[11px] border border-white/12 bg-white/6 px-2.5 py-0.5 font-mono text-[10px] text-white/50">
-            AI Conf: {post.confidence}%
+          <span className="rounded border border-border bg-muted/30 px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
+            Conf: {post.confidence}%
           </span>
-          {isMeshMode && (
-            <span className="rounded-[11px] border border-[#0066cc]/30 bg-[#0066cc]/10 px-2.5 py-0.5 font-mono text-[9px] text-[#2997ff]">
-              Offline Cache: Synced
-            </span>
-          )}
         </div>
 
-        {/* Tactical Metadata Grid */}
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-1.5">
           <Meta
             icon={Radio}
-            label="Source Channel"
-            value={isMeshMode ? `Mesh Relay · ${post.handle}` : `${post.source} · ${post.handle}`}
+            label="Source"
+            value={isMeshMode ? `Mesh · ${post.handle}` : `${post.source} · ${post.handle}`}
           />
           <Meta
             icon={Clock}
-            label="Received Time"
+            label="Received"
             value={new Date(post.receivedAt).toLocaleTimeString()}
           />
           <Meta
             icon={MapPin}
-            label="Location Detected"
+            label="Location"
             value={post.locationDetected || "Ahmedabad Central"}
           />
           <Meta
             icon={ShieldAlert}
-            label="Verification Status"
-            value={post.fake ? "Misinformation Alert" : "Verified Emergency Signal"}
+            label="Verification"
+            value={post.fake ? "Misinformation" : "Verified Signal"}
           />
         </div>
 
-        {/* Routing Intelligence Strip — success tone */}
         {(() => {
           const { hubName, distKm, etaMins } = nearestHubInfo(post.lat, post.lng);
           return (
-            <div className="flex flex-wrap items-center gap-1.5 rounded-[11px] border border-success/30 bg-success/10 px-3 py-2 font-mono text-[10px]">
-              <Navigation className="size-3 shrink-0 text-success" />
-              <span className="font-semibold text-success">NEAREST HUB:</span>
-              <span className="font-medium text-white/85">{hubName}</span>
-              <span className="text-white/20">|</span>
-              <span className="font-semibold text-success">DIST:</span>
-              <span className="text-white/85">{distKm} km</span>
-              <span className="text-white/20">|</span>
-              <span className="font-semibold text-success">ETA:</span>
-              <span className="font-semibold text-white">
-                ~{etaMins} min{etaMins !== 1 ? "s" : ""}
-              </span>
+            <div className="flex flex-wrap items-center gap-1.5 rounded border border-success/20 bg-success/5 px-2.5 py-1.5 font-mono text-[10px]">
+              <Navigation className="size-2.5 shrink-0 text-success" />
+              <span className="font-medium text-success">NEAREST HUB:</span>
+              <span className="text-foreground">{hubName}</span>
+              <span className="text-muted-foreground">·</span>
+              <span className="text-foreground">{distKm} km</span>
+              <span className="text-muted-foreground">·</span>
+              <span className="font-medium text-foreground">~{etaMins}m</span>
             </div>
           );
         })()}
 
-        {/* Dispatch Action Grid — primary pill + compact utility rects */}
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 pt-1">
+        <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-2 pt-0.5">
           <button
             onClick={() => handleActionWithOfflineSave("rescue")}
-            className="inline-flex items-center justify-center gap-2 rounded-full bg-[#0066cc] px-3 py-2.5 font-medium text-white transition-transform hover:bg-[#0071e3] active:scale-95 cursor-pointer"
-            style={{ fontSize: 14, letterSpacing: "-0.224px" }}
+            className="btn-primary justify-center gap-1.5 py-2"
           >
-            <LifeBuoy className="size-4" /> Dispatch Rescue Unit
+            <LifeBuoy className="size-3.5" /> Dispatch Rescue Unit
           </button>
           <button
             onClick={() => handleActionWithOfflineSave("medical")}
-            className="inline-flex items-center justify-center gap-2 rounded-[8px] border border-caution/30 bg-caution/10 px-3 py-2.5 text-xs font-semibold text-caution transition-colors hover:bg-caution/20 active:scale-95 cursor-pointer"
+            className="inline-flex items-center justify-center gap-1.5 rounded border border-warning/20 bg-warning/10 px-3 py-2 text-[12px] font-medium text-warning transition-colors hover:bg-warning/15 cursor-pointer"
           >
-            <HeartPulse className="size-4" /> Send Medical Team
+            <HeartPulse className="size-3.5" /> Send Medical Team
           </button>
           <button
             onClick={() => handleActionWithOfflineSave("resolved")}
-            className="inline-flex items-center justify-center gap-2 rounded-[8px] border border-success/30 bg-success/10 px-3 py-2.5 text-xs font-semibold text-success transition-colors hover:bg-success/20 active:scale-95 cursor-pointer"
+            className="inline-flex items-center justify-center gap-1.5 rounded border border-success/20 bg-success/10 px-3 py-2 text-[12px] font-medium text-success transition-colors hover:bg-success/15 cursor-pointer"
           >
-            <CheckCircle2 className="size-4" /> Mark as Resolved
+            <CheckCircle2 className="size-3.5" /> Mark as Resolved
           </button>
           <button
             onClick={() => handleActionWithOfflineSave("spam")}
-            className="inline-flex items-center justify-center gap-2 rounded-[8px] border border-white/12 bg-white/6 px-3 py-2.5 text-xs font-semibold text-white/50 transition-colors hover:bg-white/10 active:scale-95 cursor-pointer"
+            className="btn-secondary justify-center gap-1.5 py-2"
           >
-            <Ban className="size-4" /> Flag as Misinformation
+            <Ban className="size-3.5" /> Flag Misinformation
           </button>
         </div>
       </DialogContent>

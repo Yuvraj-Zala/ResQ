@@ -6,7 +6,6 @@ import {
   Pause,
   Play,
   ShieldAlert,
-  Sparkles,
   MapPin,
   Loader2,
   WifiOff,
@@ -20,12 +19,11 @@ import type { Category } from "@/lib/simulator";
 import { useOfflineMesh } from "@/context/OfflineMeshContext";
 import { PriorityBadge } from "./PriorityBadge";
 
-/* Fallback category badge — button-pearl-capsule style on dark surface */
 const fallbackCategoryStyles: Record<Category, string> = {
-  Rescue: "bg-destructive/10 text-destructive border border-destructive/25",
-  Medical: "bg-[#0066cc]/10 text-[#2997ff] border border-[#0066cc]/25",
-  Supplies: "bg-success/10 text-success border border-success/25",
-  Infrastructure: "bg-warning/10 text-warning border border-warning/25",
+  Rescue: "bg-destructive/10 text-destructive border border-destructive/20",
+  Medical: "bg-warning/10 text-warning border border-warning/20",
+  Supplies: "bg-success/10 text-success border border-success/20",
+  Infrastructure: "bg-primary/10 text-primary border border-primary/20",
 };
 
 function ago(ts: number) {
@@ -59,92 +57,55 @@ export function LiveFeed({
   }
 
   return (
-    /* store-utility-card spec: surface-tile-1, hairline border, rounded-lg */
     <div
-      className={`relative flex flex-col rounded-[18px] border bg-[#272729] transition-colors ${
-        isMeshMode ? "border-[#0066cc]/30" : "border-white/10"
+      className={`relative flex flex-col rounded border bg-card transition-colors ${
+        isMeshMode ? "border-primary/20" : "border-border"
       } ${className}`}
     >
-      {/* Feed Header — sub-nav-frosted spec */}
-      <div
-        className="flex items-center justify-between rounded-t-[18px] border-b border-white/8 px-4 py-3"
-        style={{
-          backdropFilter: "saturate(180%) blur(20px)",
-          background: "rgba(245,245,247,0.06)",
-        }}
-      >
-        <div className="flex items-center gap-2.5">
+      {/* ── Feed header ─────────────────────────────────────────────────────── */}
+      <div className="flex items-center justify-between border-b border-border px-3 py-2.5">
+        <div className="flex items-center gap-2">
           {isMeshMode ? (
-            <WifiOff className="size-3.5 text-[#0066cc]" />
+            <WifiOff className="size-3.5 text-primary" />
           ) : (
-            <Radio className="size-3.5 text-[#0066cc]" />
+            <Radio className="size-3.5 text-primary" />
           )}
           <div>
-            <p
-              className="text-white/40 uppercase"
-              style={{ fontSize: 10, letterSpacing: "0.06em", lineHeight: 1 }}
-            >
-              {isMeshMode ? "LORA MESH · P2P ACTIVE" : "GEMINI AI STREAM"}
+            <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+              {isMeshMode ? "LoRa Mesh · P2P" : "AI Triage Stream"}
             </p>
-            <h2
-              className="text-white flex items-center gap-2 mt-0.5"
-              style={{ fontSize: 14, fontWeight: 600, letterSpacing: "-0.224px", lineHeight: 1.29 }}
-            >
+            <h2 className="text-[13px] font-semibold text-foreground flex items-center gap-2">
               Live Emergency Ingestion
               {isClassifying && (
-                <span className="inline-flex items-center gap-1 text-[#0066cc]">
+                <span className="inline-flex items-center gap-1 text-primary">
                   <Loader2 className="size-2.5 animate-spin" />
-                  <span style={{ fontSize: 10 }}>ANALYZING</span>
+                  <span className="text-[10px]">ANALYZING</span>
                 </span>
               )}
-              <span
-                className="inline-flex items-center gap-1 rounded-full bg-[#0066cc]/10 px-2 py-0.5 text-[#2997ff]"
-                style={{ fontSize: 10, fontWeight: 400 }}
-              >
-                <Sparkles className="size-2.5" /> AI Scored
-              </span>
-              <button
-                type="button"
-                role="switch"
-                aria-checked={hideUnverified}
-                aria-label="Hide unverified posts"
-                onClick={() => setHideUnverified((v) => !v)}
-                className="inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-white/12 bg-white/6 px-2 py-0.5 transition-colors hover:border-white/20"
-                style={{ fontSize: 10, fontWeight: 400, letterSpacing: "0.02em" }}
-              >
-                {hideUnverified ? (
-                  <EyeOff className="size-2.5 text-[#2997ff]" />
-                ) : (
-                  <Eye className="size-2.5 text-white/40" />
-                )}
-                <span className={hideUnverified ? "text-[#2997ff]" : "text-white/60"}>
-                  Hide Unverified
-                </span>
-                <span
-                  className={`relative inline-block h-3 w-5 rounded-full transition-colors ${
-                    hideUnverified ? "bg-[#0066cc]" : "bg-white/15"
-                  }`}
-                >
-                  <span
-                    className={`absolute top-1/2 -translate-y-1/2 size-2 rounded-full bg-white transition-all ${
-                      hideUnverified ? "left-2.5" : "left-0.5"
-                    }`}
-                  />
-                </span>
-              </button>
             </h2>
           </div>
         </div>
 
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1">
+          <button
+            type="button"
+            role="switch"
+            aria-checked={hideUnverified}
+            aria-label="Hide unverified posts"
+            onClick={() => setHideUnverified((v) => !v)}
+            className="inline-flex cursor-pointer items-center gap-1 rounded border border-border bg-muted/30 px-1.5 py-0.5 text-[10px] text-muted-foreground transition-colors hover:text-foreground"
+          >
+            {hideUnverified ? <EyeOff className="size-2.5" /> : <Eye className="size-2.5" />}
+            <span className="hidden sm:inline">Verified</span>
+          </button>
           <button
             onClick={toggleSound}
             aria-pressed={sound}
             aria-label={sound ? "Mute alert sound" : "Enable alert sound"}
-            className={`grid size-7 place-items-center rounded-full border transition-colors cursor-pointer ${
+            className={`grid size-6 place-items-center rounded border transition-colors cursor-pointer ${
               sound
-                ? "border-[#0066cc]/50 bg-[#0066cc]/10 text-[#2997ff]"
-                : "border-white/15 text-white/40 hover:text-white"
+                ? "border-primary/30 bg-primary/10 text-primary"
+                : "border-border text-muted-foreground hover:text-foreground"
             }`}
           >
             {sound ? <Volume2 className="size-3" /> : <VolumeX className="size-3" />}
@@ -152,54 +113,46 @@ export function LiveFeed({
           <button
             onClick={() => setLive(!live)}
             aria-label={live ? "Pause ingestion" : "Resume ingestion"}
-            className="grid size-7 place-items-center rounded-full border border-white/15 text-white/40 transition-colors hover:text-white cursor-pointer"
+            className="grid size-6 place-items-center rounded border border-border text-muted-foreground transition-colors hover:text-foreground cursor-pointer"
           >
             {live ? <Pause className="size-3" /> : <Play className="size-3" />}
           </button>
           <span
-            className={`ml-1 flex items-center gap-1.5 ${live ? "text-success" : "text-white/30"}`}
-            style={{ fontSize: 10, letterSpacing: "0.06em" }}
+            className={`ml-1 flex items-center gap-1 ${live ? "text-success" : "text-muted-foreground"}`}
+            style={{ fontSize: 10 }}
           >
             <span
-              className={`size-1.5 rounded-full ${live ? "animate-pulse bg-success" : "bg-white/20"}`}
+              className={`size-1.5 rounded-full ${live ? "animate-pulse bg-success" : "bg-muted-foreground"}`}
             />
             {live ? "Live" : "Paused"}
           </span>
         </div>
       </div>
 
-      {/* Feed List */}
-      <div className="flex-1 divide-y divide-white/6 overflow-y-auto">
+      {/* ── Feed list ───────────────────────────────────────────────────────── */}
+      <div className="flex-1 divide-y divide-border overflow-y-auto">
         {visiblePosts.map((post, i) => {
           const categoryName = post.aiCategory || post.category;
           const categoryStyle =
             post.aiCategory && aiCategoryBadgeClass[post.aiCategory as AICategory]
               ? aiCategoryBadgeClass[post.aiCategory as AICategory]
-              : fallbackCategoryStyles[post.category] || "bg-white/8 text-white/60";
+              : fallbackCategoryStyles[post.category] || "bg-muted text-muted-foreground";
 
           return (
             <button
               key={post.id}
               type="button"
               onClick={() => onSelect?.(post.id)}
-              className={`block w-full cursor-pointer px-4 py-3.5 text-left transition-colors hover:bg-white/4 ${
+              className={`block w-full cursor-pointer px-3 py-2.5 text-left transition-colors hover:bg-white/[0.03] ${
                 i === 0 ? "animate-in fade-in slide-in-from-top-2 duration-500" : ""
-              } ${post.id === selectedId ? "bg-[#0066cc]/8 border-l-2 border-[#0066cc]" : ""}`}
+              } ${post.id === selectedId ? "bg-primary/5 border-l-2 border-primary" : "border-l-2 border-transparent"}`}
             >
               <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2 min-w-0">
-                  <p
-                    className="truncate font-medium text-white"
-                    style={{ fontSize: 14, fontWeight: 600, letterSpacing: "-0.224px" }}
-                  >
-                    {post.handle}
-                  </p>
+                <div className="flex items-center gap-1.5 min-w-0">
+                  <p className="truncate text-[12px] font-medium text-foreground">{post.handle}</p>
                   {post.locationDetected && (
-                    <span
-                      className="hidden sm:inline-flex items-center gap-1 rounded-full bg-white/8 px-2 py-0.5 text-white/50"
-                      style={{ fontSize: 10, letterSpacing: "-0.08px" }}
-                    >
-                      <MapPin className="size-2.5 text-[#0066cc]" />
+                    <span className="hidden sm:inline-flex items-center gap-0.5 rounded bg-muted/50 px-1.5 py-0.5 text-[9px] text-muted-foreground">
+                      <MapPin className="size-2 text-primary" />
                       {post.locationDetected}
                     </span>
                   )}
@@ -207,89 +160,49 @@ export function LiveFeed({
                 <PriorityBadge priority={post.priority} />
               </div>
 
-              {/* Body — 17px/400/1.47/−0.374px body spec */}
-              <p
-                className="mt-1.5 text-white/80"
-                style={{
-                  fontSize: 14,
-                  fontWeight: 400,
-                  lineHeight: 1.47,
-                  letterSpacing: "-0.224px",
-                }}
-              >
+              <p className="mt-1 text-[12px] leading-relaxed text-muted-foreground line-clamp-2">
                 {post.body}
               </p>
 
-              {/* Recommended Action */}
               {post.recommendedAction && (
-                <div
-                  className="mt-2 rounded-lg border border-[#0066cc]/20 bg-[#0066cc]/6 px-3 py-2 text-[#2997ff]"
-                  style={{ fontSize: 11, fontWeight: 400, letterSpacing: "-0.12px" }}
-                >
-                  <span className="font-semibold text-[#0066cc] mr-1">ACTION:</span>
+                <div className="mt-1.5 rounded border border-primary/15 bg-primary/5 px-2 py-1 text-[10px] text-primary/80">
+                  <span className="font-medium text-primary mr-1">ACTION:</span>
                   <span className="line-clamp-1">{post.recommendedAction}</span>
                 </div>
               )}
 
-              <div className="mt-2 flex flex-wrap items-center gap-1.5">
-                {/* Mesh tag — dark utility style */}
+              <div className="mt-1.5 flex flex-wrap items-center gap-1">
                 {isMeshMode && (
-                  <span
-                    className="rounded-[8px] border border-[#0066cc]/30 bg-[#1d1d1f] px-2 py-0.5 text-[#2997ff]"
-                    style={{ fontSize: 10, fontWeight: 400, letterSpacing: "-0.12px" }}
-                  >
+                  <span className="rounded border border-primary/20 bg-primary/5 px-1.5 py-0.5 font-mono text-[9px] text-primary">
                     [{meshNodeId}]
                   </span>
                 )}
 
-                {/* Category badge — pearl capsule style */}
                 <span
-                  className={`rounded-[11px] px-2.5 py-0.5 border ${categoryStyle}`}
-                  style={{
-                    fontSize: 11,
-                    fontWeight: 600,
-                    letterSpacing: "-0.224px",
-                    lineHeight: 1.29,
-                  }}
+                  className={`rounded px-1.5 py-0.5 border text-[10px] font-medium ${categoryStyle}`}
                 >
                   {categoryName}
                 </span>
 
-                <span
-                  className="rounded-[11px] border border-white/12 bg-white/6 px-2.5 py-0.5 text-white/50"
-                  style={{ fontSize: 10, letterSpacing: "-0.12px" }}
-                >
-                  conf {post.confidence}%
+                <span className="rounded border border-border bg-muted/30 px-1.5 py-0.5 text-[10px] text-muted-foreground">
+                  {post.confidence}%
                 </span>
 
                 <span
-                  className={`rounded-[11px] px-2.5 py-0.5 border ${statusBadgeClass[statusOf(post)]}`}
-                  style={{
-                    fontSize: 11,
-                    fontWeight: 600,
-                    letterSpacing: "-0.224px",
-                    lineHeight: 1.29,
-                  }}
+                  className={`rounded px-1.5 py-0.5 border text-[10px] font-medium ${statusBadgeClass[statusOf(post)]}`}
                 >
                   {statusLabel[statusOf(post)]}
                 </span>
 
                 {post.fake && (
-                  <span
-                    className="inline-flex items-center gap-1 rounded-[11px] border border-destructive/30 bg-destructive/10 px-2.5 py-0.5 text-destructive"
-                    style={{ fontSize: 11, fontWeight: 600, letterSpacing: "-0.224px" }}
-                  >
-                    <ShieldAlert className="size-2.5" /> FAKE NEWS FLAGGED
+                  <span className="inline-flex items-center gap-0.5 rounded border border-destructive/20 bg-destructive/10 px-1.5 py-0.5 text-[10px] font-medium text-destructive">
+                    <ShieldAlert className="size-2.5" /> SPAM
                   </span>
                 )}
               </div>
 
-              {/* Footer — fine-print spec */}
-              <div
-                className="mt-2 flex items-center justify-between text-white/30"
-                style={{ fontSize: 10, letterSpacing: "-0.08px", lineHeight: 1.3 }}
-              >
-                <span>
+              <div className="mt-1.5 flex items-center justify-between text-[10px] text-muted-foreground/60">
+                <span className="font-mono">
                   {post.source} · {post.id}
                 </span>
                 <span>{ago(post.receivedAt)} ago</span>
@@ -298,14 +211,11 @@ export function LiveFeed({
           );
         })}
         {visiblePosts.length === 0 && (
-          <div className="px-4 py-8 text-center">
-            <p
-              className="text-white/40"
-              style={{ fontSize: 11, letterSpacing: "-0.12px", lineHeight: 1.4 }}
-            >
+          <div className="px-3 py-8 text-center">
+            <p className="text-[11px] text-muted-foreground">
               No verified posts in the live stream.
             </p>
-            <p className="mt-1 text-white/25" style={{ fontSize: 10, letterSpacing: "-0.08px" }}>
+            <p className="mt-1 text-[10px] text-muted-foreground/60">
               Unverified signals are hidden.
             </p>
           </div>
