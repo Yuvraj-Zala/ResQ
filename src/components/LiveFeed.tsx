@@ -13,17 +13,25 @@ import {
   EyeOff,
 } from "lucide-react";
 import { useIngestionFeed, type IngestionFeed } from "@/hooks/useIngestionFeed";
-import { statusBadgeClass, statusLabel } from "@/lib/ops";
+import { statusLabel, type IncidentStatus } from "@/lib/ops";
 import { aiCategoryBadgeClass, type AICategory } from "@/services/aiClassifier";
 import type { Category } from "@/lib/simulator";
 import { useOfflineMesh } from "@/context/OfflineMeshContext";
 import { PriorityBadge } from "./PriorityBadge";
 
 const fallbackCategoryStyles: Record<Category, string> = {
-  Rescue: "bg-destructive/10 text-destructive border border-destructive/20",
-  Medical: "bg-warning/10 text-warning border border-warning/20",
-  Supplies: "bg-success/10 text-success border border-success/20",
-  Infrastructure: "bg-primary/10 text-primary border border-primary/20",
+  Rescue: "border-gray-800 text-gray-400",
+  Medical: "border-gray-800 text-gray-400",
+  Supplies: "border-gray-800 text-gray-400",
+  Infrastructure: "border-gray-800 text-gray-400",
+};
+
+const monoStatusBadgeClass: Record<IncidentStatus, string> = {
+  new: "border-gray-800 text-gray-400",
+  rescue: "border-gray-800 text-gray-400",
+  medical: "border-gray-800 text-gray-400",
+  resolved: "border-gray-800 text-gray-400",
+  spam: "border-gray-800 text-gray-500",
 };
 
 function ago(ts: number) {
@@ -126,13 +134,13 @@ export function LiveFeed({
       </div>
 
       {/* ── Feed list ───────────────────────────────────────────────────────── */}
-      <div className="flex-1 space-y-2 overflow-y-auto p-2">
+      <div className="flex-1 overflow-y-auto">
         {visiblePosts.map((post, i) => {
           const categoryName = post.aiCategory || post.category;
           const categoryStyle =
             post.aiCategory && aiCategoryBadgeClass[post.aiCategory as AICategory]
-              ? aiCategoryBadgeClass[post.aiCategory as AICategory]
-              : fallbackCategoryStyles[post.category] || "bg-muted text-muted-foreground";
+              ? "border-gray-800 text-gray-400"
+              : fallbackCategoryStyles[post.category] || "text-gray-500";
 
           const isSelected = post.id === selectedId;
 
@@ -141,20 +149,16 @@ export function LiveFeed({
               key={post.id}
               type="button"
               onClick={() => onSelect?.(post.id)}
-              className={`block w-full cursor-pointer rounded-2xl border p-4 text-left transition-colors ${
+              className={`block w-full cursor-pointer px-4 py-3 text-left transition-colors border-b border-[#2f3336] ${
                 i === 0 ? "animate-in fade-in slide-in-from-top-2 duration-500" : ""
-              } ${
-                isSelected
-                  ? "border-primary/40 bg-[#16181c]"
-                  : "border-[#2f3336] bg-[#16181c] hover:bg-[#1d1f23]"
-              }`}
+              } ${isSelected ? "bg-[#111]" : "hover:bg-[#111]"}`}
             >
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-1.5 min-w-0">
                   <p className="truncate text-[12px] font-medium text-foreground">{post.handle}</p>
                   {post.locationDetected && (
-                    <span className="hidden sm:inline-flex items-center gap-0.5 rounded bg-muted/50 px-1.5 py-0.5 text-[9px] text-muted-foreground">
-                      <MapPin className="size-2 text-primary" />
+                    <span className="hidden sm:inline-flex items-center gap-0.5 text-[9px] text-gray-500">
+                      <MapPin className="size-2" />
                       {post.locationDetected}
                     </span>
                   )}
@@ -170,43 +174,37 @@ export function LiveFeed({
               </p>
 
               {post.recommendedAction && (
-                <div className="mt-1.5 rounded border border-primary/15 bg-primary/5 px-2 py-1 text-[10px] text-primary/80">
-                  <span className="font-medium text-primary mr-1">ACTION:</span>
+                <div className="mt-1.5 px-2 py-1 text-[10px] text-gray-500">
+                  <span className="font-medium text-gray-400 mr-1">ACTION:</span>
                   <span className="line-clamp-1">{post.recommendedAction}</span>
                 </div>
               )}
 
-              <div className="mt-1.5 flex flex-wrap items-center gap-1">
+              <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
                 {isMeshMode && (
-                  <span className="rounded border border-primary/20 bg-primary/5 px-1.5 py-0.5 font-mono text-[9px] text-primary">
-                    [{meshNodeId}]
-                  </span>
+                  <span className="font-mono text-[9px] text-gray-500">[{meshNodeId}]</span>
                 )}
 
-                <span
-                  className={`rounded px-1.5 py-0.5 border text-[10px] font-medium ${categoryStyle}`}
-                >
+                <span className={`rounded border px-1.5 py-0.5 text-[10px] ${categoryStyle}`}>
                   {categoryName}
                 </span>
 
-                <span className="rounded border border-border bg-muted/30 px-1.5 py-0.5 text-[10px] text-muted-foreground">
-                  {post.confidence}%
-                </span>
+                <span className="text-[10px] text-gray-500">{post.confidence}%</span>
 
                 <span
-                  className={`rounded px-1.5 py-0.5 border text-[10px] font-medium ${statusBadgeClass[statusOf(post)]}`}
+                  className={`rounded border px-1.5 py-0.5 text-[10px] ${monoStatusBadgeClass[statusOf(post)]}`}
                 >
                   {statusLabel[statusOf(post)]}
                 </span>
 
                 {post.fake && (
-                  <span className="inline-flex items-center gap-0.5 rounded border border-destructive/20 bg-destructive/10 px-1.5 py-0.5 text-[10px] font-medium text-destructive">
+                  <span className="inline-flex items-center gap-0.5 rounded border border-gray-800 px-1.5 py-0.5 text-[10px] text-gray-500">
                     <ShieldAlert className="size-2.5" /> SPAM
                   </span>
                 )}
               </div>
 
-              <div className="mt-1.5 flex items-center justify-between text-[10px] text-muted-foreground/60">
+              <div className="mt-1.5 flex items-center justify-between text-[10px] text-gray-600">
                 <span className="font-mono">
                   {post.source} · {post.id}
                 </span>
@@ -217,12 +215,8 @@ export function LiveFeed({
         })}
         {visiblePosts.length === 0 && (
           <div className="px-3 py-8 text-center">
-            <p className="text-[11px] text-muted-foreground">
-              No verified posts in the live stream.
-            </p>
-            <p className="mt-1 text-[10px] text-muted-foreground/60">
-              Unverified signals are hidden.
-            </p>
+            <p className="text-[11px] text-gray-500">No verified posts in the live stream.</p>
+            <p className="mt-1 text-[10px] text-gray-600">Unverified signals are hidden.</p>
           </div>
         )}
       </div>
