@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -12,6 +12,7 @@ import { divIcon } from "leaflet";
 import { incidents, priorityColor, priorityLabel } from "@/lib/incidents";
 import { statusColor, statusLabel, type IncidentStatus } from "@/lib/ops";
 import { facilities, type FacilityType } from "@/lib/facilities";
+import { resources, resourceStatusColor, type ResourceType } from "@/lib/resources";
 import type { SimPost } from "@/lib/simulator";
 
 export interface MapProps {
@@ -93,6 +94,33 @@ function facilityIconFor(type: FacilityType) {
   return type === "Hospital" ? hospitalIcon : shieldIcon;
 }
 
+const resourceTypeSvgs: Record<ResourceType, string> = {
+  Ambulance:
+    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 17h1.5l2-7h10l2 7H21" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/><circle cx="7.5" cy="18.5" r="1.5" fill="#fff"/><circle cx="16.5" cy="18.5" r="1.5" fill="#fff"/><path d="M5 17v-4l3-5h4l3 5v4" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  Boat: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 18c2-2 4-2 6 0s4 2 6 0 4-2 6 0" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/><path d="M8 15V8l4-3 4 3v7" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  Helicopter:
+    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="8" y="10" width="8" height="5" rx="2" stroke="#fff" stroke-width="1.5"/><path d="M4 10h16M12 10V7M12 15v3" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>',
+  "Supply Truck":
+    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="2" y="8" width="12" height="9" rx="1" stroke="#fff" stroke-width="1.5"/><path d="M14 11h4l3 3v3h-7V11z" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6" cy="18.5" r="1.5" fill="#fff"/><circle cx="17" cy="18.5" r="1.5" fill="#fff"/></svg>',
+};
+
+function resourceIcon(type: ResourceType, status: string) {
+  const bg = resourceStatusColor[status as keyof typeof resourceStatusColor] ?? "#6b7280";
+  const svg = resourceTypeSvgs[type];
+  return divIcon({
+    className: "resq-resource-icon",
+    html: `<div style="
+      width: 30px; height: 30px; border-radius: 6px;
+      background: ${bg}; border: 2px solid rgba(255,255,255,0.25);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 0 2px ${bg}44, 0 2px 6px rgba(0,0,0,0.5);
+    ">${svg}</div>`,
+    iconSize: [30, 30],
+    iconAnchor: [15, 15],
+    popupAnchor: [0, -18],
+  });
+}
+
 export default function EmergencyMapClient({
   posts = [],
   statusOf,
@@ -103,6 +131,24 @@ export default function EmergencyMapClient({
 }: MapProps) {
   const selected = posts.find((p) => p.id === selectedId) ?? null;
   const flyTarget = selected ? ([selected.lat, selected.lng] as [number, number]) : mapFocus;
+
+  const [liveResources, setLiveResources] = useState(resources);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setLiveResources((prev) =>
+        prev.map((r) => {
+          if (r.status !== "Dispatched") return r;
+          return {
+            ...r,
+            lat: r.lat + (Math.random() - 0.5) * 0.0004,
+            lng: r.lng + (Math.random() - 0.5) * 0.0004,
+          };
+        }),
+      );
+    }, 3000);
+    return () => clearInterval(id);
+  }, []);
 
   return (
     <MapContainer
@@ -178,6 +224,46 @@ export default function EmergencyMapClient({
                 <span style={{ color: "#3b82f6", fontWeight: "bold" }}>BEDS: </span>
                 {f.bedsAvailable}
               </div>
+            </div>
+          </Popup>
+        </Marker>
+      ))}
+
+      {/* Resource Tracking Markers */}
+      {liveResources.map((r) => (
+        <Marker key={r.id} position={[r.lat, r.lng]} icon={resourceIcon(r.type, r.status)}>
+          <Popup>
+            <div style={{ minWidth: 180, fontFamily: "monospace", fontSize: "11px" }}>
+              <div
+                style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
+              >
+                <strong>{r.name}</strong>
+                <span
+                  style={{
+                    color: resourceStatusColor[r.status],
+                    textTransform: "uppercase",
+                    fontSize: "9px",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {r.status}
+                </span>
+              </div>
+              <div
+                style={{
+                  marginTop: "6px",
+                  padding: "4px",
+                  background: `${resourceStatusColor[r.status]}11`,
+                  borderRadius: "4px",
+                  border: `1px solid ${resourceStatusColor[r.status]}33`,
+                  fontSize: "10px",
+                  color: resourceStatusColor[r.status],
+                  fontWeight: 500,
+                }}
+              >
+                {r.type}
+              </div>
+              <div style={{ marginTop: "4px", opacity: 0.7, fontSize: "10px" }}>{r.id}</div>
             </div>
           </Popup>
         </Marker>

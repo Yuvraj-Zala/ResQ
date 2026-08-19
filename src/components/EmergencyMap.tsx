@@ -84,6 +84,31 @@ export function EmergencyMap(props: MapProps) {
               Shelter / Relief
             </div>
           </div>
+          <div className="my-1.5 h-px bg-border" />
+          <p className="eoc-label mb-1">Resources</p>
+          <div className="flex flex-col gap-0.5">
+            <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+              <span
+                className="inline-block size-2 rounded-sm"
+                style={{ backgroundColor: "#16a34a" }}
+              />
+              Available
+            </div>
+            <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+              <span
+                className="inline-block size-2 rounded-sm"
+                style={{ backgroundColor: "#2563eb" }}
+              />
+              Dispatched
+            </div>
+            <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
+              <span
+                className="inline-block size-2 rounded-sm"
+                style={{ backgroundColor: "#6b7280" }}
+              />
+              Standby
+            </div>
+          </div>
         </div>
       )}
     </div>
