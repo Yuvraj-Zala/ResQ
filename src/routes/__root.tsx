@@ -164,7 +164,7 @@ function RootLayoutInner() {
       <AppSidebar />
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
         {/* ── Header ──────────────────────────────────────────────────────────── */}
-        <header className="flex h-12 items-center justify-between gap-4 border-b border-border bg-[#080d14] px-4 shrink-0">
+        <header className="flex h-12 items-center justify-between gap-4 border-b border-border bg-black px-4 shrink-0">
           <div className="flex items-center gap-3">
             <h1 className="text-[13px] font-semibold text-foreground tracking-tight">
               Disaster Intelligence &amp; Response Support

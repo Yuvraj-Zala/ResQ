@@ -32,7 +32,7 @@ export function EmergencyMap(props: MapProps) {
           className={`flex items-center gap-1.5 rounded border px-2 py-1 text-[10px] font-medium uppercase tracking-wider transition-colors cursor-pointer ${
             showFloodZones
               ? "border-primary/40 bg-primary/10 text-primary"
-              : "border-border bg-[#0B1117]/90 text-muted-foreground hover:text-foreground"
+              : "border-border bg-black/90 text-muted-foreground hover:text-foreground"
           }`}
         >
           <Layers className="size-3" />
@@ -43,7 +43,7 @@ export function EmergencyMap(props: MapProps) {
           className={`flex items-center gap-1.5 rounded border px-2 py-1 text-[10px] font-medium uppercase tracking-wider transition-colors cursor-pointer ${
             legendOpen
               ? "border-primary/40 bg-primary/10 text-primary"
-              : "border-border bg-[#0B1117]/90 text-muted-foreground hover:text-foreground"
+              : "border-border bg-black/90 text-muted-foreground hover:text-foreground"
           }`}
         >
           <MapIcon className="size-3" />
@@ -53,7 +53,7 @@ export function EmergencyMap(props: MapProps) {
 
       {/* ── Map legend drawer ─────────────────────────────────────────────────── */}
       {legendOpen && (
-        <div className="pointer-events-none absolute bottom-3 left-3 z-[500] rounded border border-border bg-[#0B1117]/95 px-3 py-2 backdrop-blur">
+        <div className="pointer-events-none absolute bottom-3 left-3 z-[500] rounded border border-border bg-black/95 px-3 py-2 backdrop-blur">
           <p className="eoc-label mb-1.5">Severity</p>
           <div className="flex flex-col gap-0.5">
             {legend.map((p) => (

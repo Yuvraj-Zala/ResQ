@@ -158,7 +158,7 @@ export default function EmergencyMapClient({
       zoom={12}
       scrollWheelZoom={false}
       className="h-full w-full"
-      style={{ background: "#0B1117" }}
+      style={{ background: "#000000" }}
     >
       <TileLayer
         attribution="&copy; OpenStreetMap &copy; CARTO"
