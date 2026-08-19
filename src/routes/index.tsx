@@ -68,7 +68,7 @@ function Overview() {
       )}
 
       {/* ── Compact operational statistics ─────────────────────────────────── */}
-      <div className="grid grid-cols-2 gap-3.5 lg:grid-cols-4">
+      <div className="grid grid-cols-4 gap-4">
         <StatCard
           label="Active Incidents"
           tag=""
@@ -108,9 +108,9 @@ function Overview() {
       </div>
 
       {/* ── Map-centric content area ───────────────────────────────────────── */}
-      <div className="grid grid-cols-1 gap-3 xl:grid-cols-[1fr_320px]">
+      <div className="grid grid-cols-4 gap-4">
         {/* Map column — dominant visual */}
-        <section className="space-y-3 min-w-0">
+        <section className="col-span-3 space-y-3 min-w-0">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
@@ -160,7 +160,7 @@ function Overview() {
         </section>
 
         {/* Live feed column — compact sidebar */}
-        <LiveFeed className="max-h-[600px]" feed={feed} onSelect={setSelectedId} />
+        <LiveFeed className="max-h-[600px] col-span-1" feed={feed} onSelect={setSelectedId} />
       </div>
 
       <IncidentActionModal
