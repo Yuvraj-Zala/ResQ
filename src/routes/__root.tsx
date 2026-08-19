@@ -7,14 +7,13 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect, useState, type ReactNode } from "react";
-import { ShieldHalf, FileText, Circle } from "lucide-react";
+import { useState, type ReactNode } from "react";
+import { FileText } from "lucide-react";
 import { AppSidebar } from "@/components/AppSidebar";
 import { generateAndDownloadSitrep } from "@/services/sitrepExporter";
 import { DemoScenarioProvider, useDemoScenario } from "@/context/DemoScenarioContext";
 import { OfflineMeshProvider } from "@/context/OfflineMeshContext";
 import { DemoPresetsControl } from "@/components/DemoPresetsControl";
-import { MeshModeToggle } from "@/components/MeshModeToggle";
 import { Toaster } from "@/components/ui/sonner";
 
 import appCss from "../styles.css?url";
@@ -29,10 +28,7 @@ function NotFoundComponent() {
           The page you're looking for doesn't exist or has been moved.
         </p>
         <div className="mt-6">
-          <Link
-            to="/"
-            className="btn-primary"
-          >
+          <Link to="/" className="btn-primary">
             Go home
           </Link>
         </div>
@@ -64,37 +60,13 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
           >
             Try again
           </button>
-          <a
-            href="/"
-            className="btn-secondary"
-          >
+          <a href="/" className="btn-secondary">
             Go home
           </a>
         </div>
       </div>
     </div>
   );
-}
-
-function useISTClock() {
-  const [time, setTime] = useState("");
-  useEffect(() => {
-    const update = () => {
-      const now = new Date();
-      const istTime = now.toLocaleTimeString("en-IN", {
-        timeZone: "Asia/Kolkata",
-        hour12: false,
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-      });
-      setTime(istTime);
-    };
-    update();
-    const timer = setInterval(update, 1000);
-    return () => clearInterval(timer);
-  }, []);
-  return time;
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
@@ -166,9 +138,8 @@ function RootComponent() {
 }
 
 function RootLayoutInner() {
-  const istTime = useISTClock();
   const [isExporting, setIsExporting] = useState(false);
-  const { sector, activationLevel, stats } = useDemoScenario();
+  const { stats } = useDemoScenario();
 
   const handleExportSitrep = () => {
     setIsExporting(true);
@@ -179,7 +150,7 @@ function RootLayoutInner() {
         resolvedCases: stats.resolvedToday,
         connectedSources: stats.connectedSources,
         operatorId: "NDRF-#4092",
-        sector: sector.replace(/^SECTOR:\s*/, ""),
+        sector: "AHMEDABAD CENTRAL",
       });
     } catch {
       /* silent fallback */
@@ -192,37 +163,8 @@ function RootLayoutInner() {
     <div className="flex h-screen overflow-hidden bg-background font-sans text-foreground">
       <AppSidebar />
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
-        {/* ── Top command status bar ─────────────────────────────────────────── */}
-        <div className="flex items-center gap-4 border-b border-border bg-[#080d14] px-4 py-1.5 text-[11px] uppercase tracking-wider overflow-x-auto shrink-0">
-          <span className="flex items-center gap-1.5 font-semibold text-foreground shrink-0">
-            <ShieldHalf className="size-3.5 text-primary" />
-            GSDMA / NDRF UNIT 06
-          </span>
-          <span className="text-border">|</span>
-          <span className="flex items-center gap-1.5 shrink-0">
-            <Circle className="size-1.5 fill-success text-success" />
-            <span className="text-success font-medium">SYSTEM OPERATIONAL</span>
-          </span>
-          <span className="text-border">|</span>
-          <span className="shrink-0 text-muted-foreground font-medium">{sector}</span>
-          <span className="text-border">|</span>
-          <MeshModeToggle />
-          <span className="text-border">|</span>
-          <span className="shrink-0 font-mono text-muted-foreground">{istTime} IST</span>
-          {activationLevel && (
-            <>
-              <span className="text-border">|</span>
-              <span className="shrink-0 flex items-center gap-1 text-destructive font-medium">
-                {activationLevel}
-              </span>
-            </>
-          )}
-        </div>
-
-        {/* ── Sub header ────────────────────────────────────────────────────── */}
-        <header
-          className="flex items-center justify-between gap-4 border-b border-border bg-[#080d14] px-4 py-2 shrink-0"
-        >
+        {/* ── Header ──────────────────────────────────────────────────────────── */}
+        <header className="flex items-center justify-between gap-4 border-b border-border bg-[#080d14] px-4 py-2 shrink-0">
           <div className="flex items-center gap-3">
             <h1 className="text-[13px] font-semibold text-foreground tracking-tight">
               Disaster Intelligence &amp; Response Support
@@ -242,7 +184,9 @@ function RootLayoutInner() {
               title="Export GSDMA Official Situation Report PDF"
             >
               <FileText className="size-3.5" />
-              <span className="hidden sm:inline">{isExporting ? "GENERATING..." : "EXPORT SITREP"}</span>
+              <span className="hidden sm:inline">
+                {isExporting ? "GENERATING..." : "EXPORT SITREP"}
+              </span>
             </button>
           </div>
         </header>
