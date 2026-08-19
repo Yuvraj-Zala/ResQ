@@ -66,7 +66,7 @@ function Dispatch() {
 
       <div className="grid grid-cols-1 gap-3 lg:grid-cols-[1fr_300px]">
         {/* Unassigned incidents */}
-        <div className="rounded border border-border bg-card">
+        <div className="rounded bg-card">
           <div className="border-b border-border px-3 py-2">
             <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
               Unassigned Incidents
@@ -89,7 +89,7 @@ function Dispatch() {
         </div>
 
         {/* Response units */}
-        <div className="rounded border border-border bg-card">
+        <div className="rounded bg-card">
           <div className="flex items-center gap-2 border-b border-border px-3 py-2">
             <Truck className="size-3.5 text-primary" />
             <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">

@@ -13,7 +13,7 @@ export function AppSidebar() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   return (
-    <aside className="sticky top-0 hidden h-screen w-52 shrink-0 flex-col border-r border-border bg-black md:flex">
+    <aside className="sticky top-0 hidden h-screen w-52 shrink-0 flex-col bg-black md:flex">
       {/* ── Brand ──────────────────────────────────────────────────────────── */}
       <div className="flex items-center gap-2 border-b border-border px-4 py-3 shrink-0">
         <img src="/logo.png" alt="ResQ" className="size-8 rounded object-contain" />

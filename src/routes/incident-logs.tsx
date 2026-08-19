@@ -43,7 +43,7 @@ function Logs() {
         </div>
       </div>
 
-      <div className="overflow-x-auto rounded border border-border bg-card">
+      <div className="overflow-x-auto rounded bg-card">
         <table className="w-full text-[12px]">
           <thead>
             <tr className="border-b border-border text-left">

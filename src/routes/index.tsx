@@ -138,7 +138,7 @@ function Overview() {
           />
 
           {/* ── Priority queue ────────────────────────────────────────────── */}
-          <div className="rounded border border-border bg-card">
+          <div className="rounded bg-card">
             <div className="border-b border-border px-3 py-2">
               <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
                 Priority Queue

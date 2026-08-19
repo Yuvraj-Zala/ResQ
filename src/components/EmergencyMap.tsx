@@ -16,7 +16,7 @@ export function EmergencyMap(props: MapProps) {
   useEffect(() => setMounted(true), []);
 
   return (
-    <div className="relative h-[360px] overflow-hidden rounded border border-border bg-card lg:h-[480px]">
+    <div className="relative h-[360px] overflow-hidden rounded bg-card lg:h-[480px]">
       {mounted ? (
         <Suspense fallback={<MapSkeleton />}>
           <MapClient {...props} showFloodZones={showFloodZones} showResources={showResources} />

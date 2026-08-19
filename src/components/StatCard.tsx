@@ -26,7 +26,7 @@ const toneBg: Record<Props["tone"], string> = {
 
 export function StatCard({ label, value, delta, trend, icon: Icon, tone }: Props) {
   return (
-    <div className="rounded border border-border bg-card p-4">
+    <div className="rounded bg-card p-4">
       <div className="flex items-start justify-between">
         <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
           {label}

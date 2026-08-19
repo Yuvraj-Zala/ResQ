@@ -58,9 +58,7 @@ export function LiveFeed({
 
   return (
     <div
-      className={`relative flex flex-col rounded border bg-card transition-colors ${
-        isMeshMode ? "border-primary/20" : "border-border"
-      } ${className}`}
+      className={`relative flex flex-col rounded bg-card transition-colors ${className}`}
     >
       {/* ── Feed header ─────────────────────────────────────────────────────── */}
       <div className="flex items-center justify-between border-b border-border px-3 py-2.5">

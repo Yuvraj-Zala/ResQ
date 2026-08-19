@@ -35,7 +35,7 @@ function Heatmap() {
       <EmergencyMap />
       <div className="grid grid-cols-2 gap-2 lg:grid-cols-4">
         {incidents.slice(0, 4).map((i) => (
-          <div key={i.id} className="rounded border border-border bg-card p-3">
+          <div key={i.id} className="rounded bg-card p-3">
             <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
               {i.district}
             </p>

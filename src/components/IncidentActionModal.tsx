@@ -107,7 +107,7 @@ export function IncidentActionModal({ post, status, onAction, onOpenChange }: Pr
 
   return (
     <Dialog open={!!post} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg rounded border border-border bg-card">
+      <DialogContent className="sm:max-w-lg rounded bg-card">
         <DialogHeader>
           <DialogTitle className="flex items-center justify-between gap-2 text-[13px]">
             <div className="flex items-center gap-2">

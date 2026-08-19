@@ -48,7 +48,7 @@ function LiveFeedsPage() {
       <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
         <LiveFeed className="max-h-[720px]" feed={feed} onSelect={setSelectedId} />
         <div className="space-y-3">
-          <div className="rounded border border-border bg-card p-4">
+          <div className="rounded bg-card p-4">
             <p className="text-[9px] font-medium uppercase tracking-wider text-primary">
               AI Triage Overview
             </p>
