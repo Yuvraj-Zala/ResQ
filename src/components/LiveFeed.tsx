@@ -57,9 +57,7 @@ export function LiveFeed({
   }
 
   return (
-    <div
-      className={`relative flex flex-col rounded bg-card transition-colors ${className}`}
-    >
+    <div className={`relative flex flex-col rounded bg-card transition-colors ${className}`}>
       {/* ── Feed header ─────────────────────────────────────────────────────── */}
       <div className="flex items-center justify-between border-b border-border px-3 py-2.5">
         <div className="flex items-center gap-2">
@@ -128,7 +126,7 @@ export function LiveFeed({
       </div>
 
       {/* ── Feed list ───────────────────────────────────────────────────────── */}
-      <div className="flex-1 divide-y divide-border overflow-y-auto">
+      <div className="flex-1 space-y-2 overflow-y-auto p-2">
         {visiblePosts.map((post, i) => {
           const categoryName = post.aiCategory || post.category;
           const categoryStyle =
@@ -136,14 +134,20 @@ export function LiveFeed({
               ? aiCategoryBadgeClass[post.aiCategory as AICategory]
               : fallbackCategoryStyles[post.category] || "bg-muted text-muted-foreground";
 
+          const isSelected = post.id === selectedId;
+
           return (
             <button
               key={post.id}
               type="button"
               onClick={() => onSelect?.(post.id)}
-              className={`block w-full cursor-pointer px-3 py-3 text-left transition-colors hover:bg-white/[0.03] ${
+              className={`block w-full cursor-pointer rounded-2xl border p-4 text-left transition-colors ${
                 i === 0 ? "animate-in fade-in slide-in-from-top-2 duration-500" : ""
-              } ${post.id === selectedId ? "bg-primary/5 border-l-2 border-primary" : "border-l-2 border-transparent"}`}
+              } ${
+                isSelected
+                  ? "border-primary/40 bg-[#16181c]"
+                  : "border-[#2f3336] bg-[#16181c] hover:bg-[#1d1f23]"
+              }`}
             >
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-1.5 min-w-0">
