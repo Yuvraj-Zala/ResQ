@@ -1,6 +1,6 @@
-# RescuAI — Disaster Intelligence & Response Support System
+# ResQ — Disaster Intelligence & Response Support System
 
-RescuAI is a production-oriented, dark-mode web platform for disaster intelligence and emergency response coordination. It aggregates live incident signals, classifies them by priority, renders them on an interactive city map, and gives command-center operators the tooling to triage, dispatch, and log rescues in real time.
+ResQ is a production-oriented, dark-mode web platform for disaster intelligence and emergency response coordination. It aggregates live incident signals, classifies them by priority, renders them on an interactive city map, and gives command-center operators the tooling to triage, dispatch, and log rescues in real time.
 
 Built with **TanStack Start** (full-stack React), **Vite**, **Tailwind CSS v4**, and **Leaflet**.
 
@@ -78,10 +78,10 @@ src/
 
 The interface uses a dark command-center aesthetic:
 
-- **Surfaces** — near-black ink backgrounds (`#1d1d1f`) with subtle elevated cards (`#272729`)
-- **Accent** — Action Blue (`#0066cc`) with sky highlight (`#2997ff`) for on-dark emphasis
-- **Semantic colors** — red / amber / green reserved strictly for emergency severity states
-- **Typography** — compact system font stack with monospace micro-labels for telemetry-style readouts
+- **Surfaces** — deep navy backgrounds (`#0B1117`) with subtle elevated cards (`#151E28`)
+- **Accent** — Operational Blue (`#2563eb`) for primary actions and emphasis
+- **Semantic colors** — red / amber / yellow / blue / green reserved strictly for emergency severity states
+- **Typography** — Inter for body text with monospace micro-labels for telemetry-style readouts
 
 ## Available Scripts
 

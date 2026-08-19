@@ -7,12 +7,12 @@ import { statusColor } from "@/lib/ops";
 export const Route = createFileRoute("/incident-logs")({
   head: () => ({
     meta: [
-      { title: "Incident Logs — RescuAI" },
+      { title: "Incident Logs — ResQ" },
       {
         name: "description",
         content: "Chronological log of reported incidents, districts and affected populations.",
       },
-      { property: "og:title", content: "Incident Logs — RescuAI" },
+      { property: "og:title", content: "Incident Logs — ResQ" },
       { property: "og:description", content: "Auditable record of every reported incident." },
     ],
   }),
@@ -47,13 +47,27 @@ function Logs() {
         <table className="w-full text-[12px]">
           <thead>
             <tr className="border-b border-border text-left">
-              <th className="px-3 py-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">ID</th>
-              <th className="px-3 py-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Incident</th>
-              <th className="hidden px-3 py-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground sm:table-cell">Type</th>
-              <th className="hidden px-3 py-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground md:table-cell">District</th>
-              <th className="px-3 py-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Severity</th>
-              <th className="hidden px-3 py-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground lg:table-cell">Status</th>
-              <th className="px-3 py-2 text-right text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Age</th>
+              <th className="px-3 py-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                ID
+              </th>
+              <th className="px-3 py-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                Incident
+              </th>
+              <th className="hidden px-3 py-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground sm:table-cell">
+                Type
+              </th>
+              <th className="hidden px-3 py-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground md:table-cell">
+                District
+              </th>
+              <th className="px-3 py-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                Severity
+              </th>
+              <th className="hidden px-3 py-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground lg:table-cell">
+                Status
+              </th>
+              <th className="px-3 py-2 text-right text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+                Age
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
@@ -62,13 +76,18 @@ function Logs() {
                 <td className="px-3 py-2 font-mono text-[10px] text-muted-foreground">{i.id}</td>
                 <td className="px-3 py-2 text-foreground font-medium">{i.title}</td>
                 <td className="hidden px-3 py-2 text-muted-foreground sm:table-cell">{i.type}</td>
-                <td className="hidden px-3 py-2 text-muted-foreground md:table-cell">{i.district}</td>
+                <td className="hidden px-3 py-2 text-muted-foreground md:table-cell">
+                  {i.district}
+                </td>
                 <td className="px-3 py-2">
                   <PriorityBadge priority={i.priority} />
                 </td>
                 <td className="hidden px-3 py-2 lg:table-cell">
                   <span className="inline-flex items-center gap-1 text-[10px] text-muted-foreground">
-                    <span className="size-1.5 rounded-full" style={{ backgroundColor: statusColor.new }} />
+                    <span
+                      className="size-1.5 rounded-full"
+                      style={{ backgroundColor: statusColor.new }}
+                    />
                     Active
                   </span>
                 </td>

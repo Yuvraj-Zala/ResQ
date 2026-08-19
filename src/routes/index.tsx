@@ -18,13 +18,13 @@ import type { IncidentStatus } from "@/lib/ops";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "RescuAI Overview — Ahmedabad Central Command" },
+      { title: "ResQ Overview — Ahmedabad Central" },
       {
         name: "description",
         content:
           "Live disaster intelligence overview: active alerts, priority rescues, city incident map and incoming emergency signals for Ahmedabad.",
       },
-      { property: "og:title", content: "RescuAI Overview — Ahmedabad Central Command" },
+      { property: "og:title", content: "ResQ Overview — Ahmedabad Central" },
       {
         property: "og:description",
         content: "Monitor alerts, rescues and emergency signals across Ahmedabad in real time.",

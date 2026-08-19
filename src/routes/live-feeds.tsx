@@ -7,13 +7,13 @@ import type { IncidentStatus } from "@/lib/ops";
 export const Route = createFileRoute("/live-feeds")({
   head: () => ({
     meta: [
-      { title: "Live Feeds — RescuAI Ahmedabad" },
+      { title: "Live Feeds — ResQ Ahmedabad" },
       {
         name: "description",
         content:
           "Real-time emergency signals from social, radio, sensors and citizen apps categorized by Gemini AI.",
       },
-      { property: "og:title", content: "Live Feeds — RescuAI Ahmedabad" },
+      { property: "og:title", content: "Live Feeds — ResQ Ahmedabad" },
       {
         property: "og:description",
         content: "Real-time emergency signals across every connected channel.",
@@ -56,13 +56,16 @@ function LiveFeedsPage() {
               Real-time NLP Classification Engine
             </h3>
             <p className="mt-2 text-[12px] leading-relaxed text-muted-foreground">
-              Every incoming social dispatch, emergency call, field radio log, and citizen
-              app report is automatically evaluated against disaster taxonomy with instant
-              location extraction and automated dispatch recommendations.
+              Every incoming social dispatch, emergency call, field radio log, and citizen app
+              report is automatically evaluated against disaster taxonomy with instant location
+              extraction and automated dispatch recommendations.
             </p>
             <div className="mt-3 grid grid-cols-3 gap-2">
               {["Rescue", "Medical", "Infrastructure"].map((cat) => (
-                <div key={cat} className="rounded border border-border bg-muted/30 px-2 py-1.5 text-center">
+                <div
+                  key={cat}
+                  className="rounded border border-border bg-muted/30 px-2 py-1.5 text-center"
+                >
                   <p className="text-[10px] font-medium text-foreground">{cat}</p>
                   <p className="text-[9px] text-muted-foreground">Auto-classified</p>
                 </div>

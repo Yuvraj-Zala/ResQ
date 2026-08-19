@@ -102,13 +102,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "RescuAI | GSDMA Command Center" },
+      { title: "ResQ | GSDMA Command Center" },
       {
         name: "description",
         content:
-          "RescuAI is a disaster intelligence and response support console for live alerts, rescue dispatch and city-wide incident mapping.",
+          "ResQ is a disaster intelligence and response support console for live alerts, rescue dispatch and city-wide incident mapping.",
       },
-      { property: "og:title", content: "RescuAI — Disaster Intelligence & Response" },
+      { property: "og:title", content: "ResQ — Disaster Intelligence & Response" },
       {
         property: "og:description",
         content: "Live alerts, rescue dispatch and city-wide incident mapping in one console.",

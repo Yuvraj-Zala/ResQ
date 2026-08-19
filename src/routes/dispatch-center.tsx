@@ -6,12 +6,12 @@ import { PriorityBadge } from "@/components/PriorityBadge";
 export const Route = createFileRoute("/dispatch-center")({
   head: () => ({
     meta: [
-      { title: "Dispatch Center — RescuAI Ahmedabad" },
+      { title: "Dispatch Center — ResQ Ahmedabad" },
       {
         name: "description",
         content: "Assign response units, track ETAs and coordinate rescue teams across Ahmedabad.",
       },
-      { property: "og:title", content: "Dispatch Center — RescuAI Ahmedabad" },
+      { property: "og:title", content: "Dispatch Center — ResQ Ahmedabad" },
       {
         property: "og:description",
         content: "Coordinate units and track rescue ETAs in real time.",
@@ -26,16 +26,30 @@ const units = [
   { id: "UNIT-07", type: "Medical", crew: 4, status: "On scene", eta: "—", available: false },
   { id: "UNIT-21", type: "Civil Defence", crew: 8, status: "Available", eta: "—", available: true },
   { id: "UNIT-33", type: "NDRF", crew: 5, status: "Returning", eta: "12 min", available: false },
-  { id: "UNIT-14", type: "Medical Response", crew: 3, status: "Standby", eta: "—", available: true },
-  { id: "UNIT-09", type: "Fire Rescue", crew: 6, status: "En route", eta: "7 min", available: false },
+  {
+    id: "UNIT-14",
+    type: "Medical Response",
+    crew: 3,
+    status: "Standby",
+    eta: "—",
+    available: true,
+  },
+  {
+    id: "UNIT-09",
+    type: "Fire Rescue",
+    crew: 6,
+    status: "En route",
+    eta: "7 min",
+    available: false,
+  },
 ];
 
 const statusColor: Record<string, string> = {
   "En route": "text-warning",
   "On scene": "text-success",
-  "Available": "text-primary",
-  "Returning": "text-muted-foreground",
-  "Standby": "text-muted-foreground",
+  Available: "text-primary",
+  Returning: "text-muted-foreground",
+  Standby: "text-muted-foreground",
 };
 
 function Dispatch() {
@@ -68,9 +82,7 @@ function Dispatch() {
                   </p>
                 </div>
                 <PriorityBadge priority={i.priority} />
-                <button className="btn-primary text-[11px] px-2.5 py-1">
-                  Assign
-                </button>
+                <button className="btn-primary text-[11px] px-2.5 py-1">Assign</button>
               </li>
             ))}
           </ul>
@@ -92,7 +104,9 @@ function Dispatch() {
                     <p className="font-mono text-[11px] font-medium text-foreground">{u.id}</p>
                     <p className="text-[10px] text-muted-foreground">{u.type}</p>
                   </div>
-                  <span className={`text-[10px] font-medium ${statusColor[u.status] || "text-muted-foreground"}`}>
+                  <span
+                    className={`text-[10px] font-medium ${statusColor[u.status] || "text-muted-foreground"}`}
+                  >
                     {u.status}
                   </span>
                 </div>

@@ -5,12 +5,13 @@ import { incidents } from "@/lib/incidents";
 export const Route = createFileRoute("/heatmap")({
   head: () => ({
     meta: [
-      { title: "Heatmap — RescuAI Ahmedabad" },
+      { title: "Heatmap — ResQ Ahmedabad" },
       {
         name: "description",
-        content: "Density view of incident clusters and affected population across Ahmedabad districts.",
+        content:
+          "Density view of incident clusters and affected population across Ahmedabad districts.",
       },
-      { property: "og:title", content: "Heatmap — RescuAI Ahmedabad" },
+      { property: "og:title", content: "Heatmap — ResQ Ahmedabad" },
       {
         property: "og:description",
         content: "Incident density and impact clusters across Ahmedabad.",
@@ -38,9 +39,7 @@ function Heatmap() {
             <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
               {i.district}
             </p>
-            <p className="mt-1 text-xl font-bold tabular-nums text-foreground">
-              {i.people}
-            </p>
+            <p className="mt-1 text-xl font-bold tabular-nums text-foreground">{i.people}</p>
             <p className="text-[10px] text-muted-foreground">people affected</p>
           </div>
         ))}

@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, Radio, Map, ScrollText, Send, ShieldAlert, Circle } from "lucide-react";
+import { LayoutDashboard, Radio, Map, ScrollText, Send, Circle } from "lucide-react";
 
 const navItems = [
   { title: "Overview", url: "/", icon: LayoutDashboard },
@@ -16,12 +16,10 @@ export function AppSidebar() {
     <aside className="sticky top-0 hidden h-screen w-52 shrink-0 flex-col border-r border-border bg-[#080d14] md:flex">
       {/* ── Brand ──────────────────────────────────────────────────────────── */}
       <div className="flex items-center gap-2 border-b border-border px-4 py-3 shrink-0">
-        <div className="grid size-8 place-items-center rounded bg-primary">
-          <ShieldAlert className="size-4 text-white" />
-        </div>
+        <img src="/logo.png" alt="ResQ" className="size-8 rounded object-contain" />
         <div>
           <p className="text-[13px] font-bold tracking-tight text-foreground">
-            RESCU<span className="text-primary">AI</span>
+            Res<span className="text-primary">Q</span>
           </p>
           <p className="text-[10px] text-muted-foreground leading-tight">Disaster Intelligence</p>
         </div>
