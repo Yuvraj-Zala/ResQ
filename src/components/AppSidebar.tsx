@@ -67,23 +67,9 @@ export function AppSidebar() {
           <p className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground mb-1.5">
             Connected Sources
           </p>
-          <div className="space-y-0.5 text-[11px] text-muted-foreground">
-            <div className="flex items-center justify-between">
-              <span>Social Media</span>
-              <Circle className="size-1 fill-success text-success" />
-            </div>
-            <div className="flex items-center justify-between">
-              <span>Emergency Lines</span>
-              <Circle className="size-1 fill-success text-success" />
-            </div>
-            <div className="flex items-center justify-between">
-              <span>Field Radio</span>
-              <Circle className="size-1 fill-success text-success" />
-            </div>
-            <div className="flex items-center justify-between">
-              <span>Sensor Grid</span>
-              <Circle className="size-1 fill-success text-success" />
-            </div>
+          <div className="flex items-center gap-2 rounded border border-success/20 bg-success/5 px-2 py-1">
+            <Circle className="size-1.5 fill-success text-success" />
+            <span className="text-[11px] font-medium text-success">4/4 Feeds Live</span>
           </div>
         </div>
 

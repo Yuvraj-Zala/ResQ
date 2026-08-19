@@ -56,9 +56,7 @@ function Overview() {
             <span className="text-[11px] font-semibold uppercase tracking-wider text-destructive">
               Active Incident
             </span>
-            <span className="text-[12px] text-foreground font-medium">
-              {scenarioInfo.name}
-            </span>
+            <span className="text-[12px] text-foreground font-medium">{scenarioInfo.name}</span>
             <span className="hidden sm:inline text-[11px] text-muted-foreground">
               — {scenarioInfo.description}
             </span>
@@ -70,7 +68,7 @@ function Overview() {
       )}
 
       {/* ── Compact operational statistics ─────────────────────────────────── */}
-      <div className="grid grid-cols-2 gap-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3.5 lg:grid-cols-4">
         <StatCard
           label="Active Incidents"
           tag=""
@@ -122,7 +120,8 @@ function Overview() {
                 City Incident Map — Ahmedabad
               </h2>
               <p className="text-[11px] text-muted-foreground mt-0.5">
-                {incidents.length + (activeScenario ? scenarioInfo?.posts.length || 0 : 0)} geolocated signals
+                {incidents.length + (activeScenario ? scenarioInfo?.posts.length || 0 : 0)}{" "}
+                geolocated signals
               </p>
             </div>
             <span className="rounded border border-border bg-muted/50 px-2 py-0.5 font-mono text-[10px] text-muted-foreground">
@@ -150,7 +149,9 @@ function Overview() {
                 <li key={i.id} className="flex items-center gap-3 px-3 py-2 text-[12px]">
                   <span className="font-mono text-[10px] text-muted-foreground">{i.id}</span>
                   <span className="min-w-0 flex-1 truncate text-foreground">{i.title}</span>
-                  <span className="hidden text-[11px] text-muted-foreground sm:block">{i.district}</span>
+                  <span className="hidden text-[11px] text-muted-foreground sm:block">
+                    {i.district}
+                  </span>
                   <PriorityBadge priority={i.priority} />
                 </li>
               ))}

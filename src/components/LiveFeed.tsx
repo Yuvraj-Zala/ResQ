@@ -143,7 +143,7 @@ export function LiveFeed({
               key={post.id}
               type="button"
               onClick={() => onSelect?.(post.id)}
-              className={`block w-full cursor-pointer px-3 py-2.5 text-left transition-colors hover:bg-white/[0.03] ${
+              className={`block w-full cursor-pointer px-3 py-3 text-left transition-colors hover:bg-white/[0.03] ${
                 i === 0 ? "animate-in fade-in slide-in-from-top-2 duration-500" : ""
               } ${post.id === selectedId ? "bg-primary/5 border-l-2 border-primary" : "border-l-2 border-transparent"}`}
             >
@@ -160,7 +160,10 @@ export function LiveFeed({
                 <PriorityBadge priority={post.priority} />
               </div>
 
-              <p className="mt-1 text-[12px] leading-relaxed text-muted-foreground line-clamp-2">
+              <p
+                className="mt-1 text-[12px] leading-relaxed line-clamp-2"
+                style={{ color: "#ffffff" }}
+              >
                 {post.body}
               </p>
 
