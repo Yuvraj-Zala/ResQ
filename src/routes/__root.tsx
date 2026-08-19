@@ -8,7 +8,7 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { useState, type ReactNode } from "react";
-import { FileText } from "lucide-react";
+import { FileText, PanelLeftClose, PanelLeft } from "lucide-react";
 import { AppSidebar } from "@/components/AppSidebar";
 import { generateAndDownloadSitrep } from "@/services/sitrepExporter";
 import { DemoScenarioProvider, useDemoScenario } from "@/context/DemoScenarioContext";
@@ -139,6 +139,7 @@ function RootComponent() {
 
 function RootLayoutInner() {
   const [isExporting, setIsExporting] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const { stats } = useDemoScenario();
 
   const handleExportSitrep = () => {
@@ -161,11 +162,29 @@ function RootLayoutInner() {
 
   return (
     <div className="flex h-screen overflow-hidden bg-background font-sans text-foreground">
-      <AppSidebar />
+      <div
+        className={`shrink-0 overflow-hidden transition-all duration-300 ease-in-out ${
+          isSidebarOpen ? "w-52" : "w-0"
+        }`}
+      >
+        <AppSidebar />
+      </div>
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
         {/* ── Header ──────────────────────────────────────────────────────────── */}
         <header className="flex h-12 items-center justify-between gap-4 border-b border-border bg-black px-4 shrink-0">
           <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setIsSidebarOpen((v) => !v)}
+              className="grid size-7 place-items-center rounded text-muted-foreground transition-colors hover:text-foreground cursor-pointer"
+              title={isSidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
+            >
+              {isSidebarOpen ? (
+                <PanelLeftClose className="size-4" />
+              ) : (
+                <PanelLeft className="size-4" />
+              )}
+            </button>
             <h1 className="text-[13px] font-semibold text-foreground tracking-tight">
               Disaster Intelligence &amp; Response Support
             </h1>
