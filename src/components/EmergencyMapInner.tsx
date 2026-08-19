@@ -21,6 +21,7 @@ export interface MapProps {
   selectedId?: string | null;
   onSelect?: (post: SimPost) => void;
   showFloodZones?: boolean;
+  showResources?: boolean;
   mapFocus?: [number, number] | null;
 }
 
@@ -96,12 +97,12 @@ function facilityIconFor(type: FacilityType) {
 
 const resourceTypeSvgs: Record<ResourceType, string> = {
   Ambulance:
-    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 17h1.5l2-7h10l2 7H21" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/><circle cx="7.5" cy="18.5" r="1.5" fill="#fff"/><circle cx="16.5" cy="18.5" r="1.5" fill="#fff"/><path d="M5 17v-4l3-5h4l3 5v4" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-  Boat: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M3 18c2-2 4-2 6 0s4 2 6 0 4-2 6 0" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/><path d="M8 15V8l4-3 4 3v7" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 10H6"/><path d="M14 18v-3.14a2 2 0 0 0-.59-1.41L10.7 11"/><path d="M14 3v4h4l3 4v5"/><circle cx="8.5" cy="19" r="2"/><circle cx="17.5" cy="19" r="2"/><path d="M14 11H8"/><path d="m7 11-3 4v3h12v-4l-2.5-4"/></svg>',
+  Boat: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 21c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1 .6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M19.38 20A11.6 11.6 0 0 0 21 14l-9-4-9 4c0 2.9.94 5.34 2.81 7.76"/><path d="M19 13V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6"/><path d="M12 1v4"/></svg>',
   Helicopter:
-    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="8" y="10" width="8" height="5" rx="2" stroke="#fff" stroke-width="1.5"/><path d="M4 10h16M12 10V7M12 15v3" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>',
+    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12c-2.56 0-4.41-2.06-5-4.5C6.1 4.5 8.2 3 12 3s5.9 1.5 5 4.5c-.59 2.44-2.44 4.5-5 4.5z"/><path d="M12 12v9"/><path d="M6 15l6-3 6 3"/><path d="M18 15v3a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-3"/></svg>',
   "Supply Truck":
-    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="2" y="8" width="12" height="9" rx="1" stroke="#fff" stroke-width="1.5"/><path d="M14 11h4l3 3v3h-7V11z" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6" cy="18.5" r="1.5" fill="#fff"/><circle cx="17" cy="18.5" r="1.5" fill="#fff"/></svg>',
+    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>',
 };
 
 function resourceIcon(type: ResourceType, status: string) {
@@ -127,6 +128,7 @@ export default function EmergencyMapClient({
   selectedId = null,
   onSelect,
   showFloodZones = false,
+  showResources = true,
   mapFocus = null,
 }: MapProps) {
   const selected = posts.find((p) => p.id === selectedId) ?? null;
@@ -230,51 +232,52 @@ export default function EmergencyMapClient({
       ))}
 
       {/* Resource Tracking Markers */}
-      {liveResources.map((r) => (
-        <Marker key={r.id} position={[r.lat, r.lng]} icon={resourceIcon(r.type, r.status)}>
-          <Popup>
-            <div style={{ minWidth: 180, fontFamily: "monospace", fontSize: "11px" }}>
-              <div
-                style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
-              >
-                <strong>{r.name}</strong>
-                <span
+      {showResources &&
+        liveResources.map((r) => (
+          <Marker key={r.id} position={[r.lat, r.lng]} icon={resourceIcon(r.type, r.status)}>
+            <Popup>
+              <div style={{ minWidth: 180, fontFamily: "monospace", fontSize: "11px" }}>
+                <div
+                  style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
+                >
+                  <strong>{r.name}</strong>
+                  <span
+                    style={{
+                      color: resourceStatusColor[r.status],
+                      textTransform: "uppercase",
+                      fontSize: "9px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {r.status}
+                  </span>
+                </div>
+                <div
                   style={{
+                    marginTop: "6px",
+                    padding: "4px",
+                    background: `${resourceStatusColor[r.status]}11`,
+                    borderRadius: "4px",
+                    border: `1px solid ${resourceStatusColor[r.status]}33`,
+                    fontSize: "10px",
                     color: resourceStatusColor[r.status],
-                    textTransform: "uppercase",
-                    fontSize: "9px",
-                    fontWeight: "bold",
+                    fontWeight: 500,
                   }}
                 >
-                  {r.status}
-                </span>
+                  {r.type}
+                </div>
+                <div style={{ marginTop: "4px", opacity: 0.7, fontSize: "10px" }}>{r.id}</div>
               </div>
-              <div
-                style={{
-                  marginTop: "6px",
-                  padding: "4px",
-                  background: `${resourceStatusColor[r.status]}11`,
-                  borderRadius: "4px",
-                  border: `1px solid ${resourceStatusColor[r.status]}33`,
-                  fontSize: "10px",
-                  color: resourceStatusColor[r.status],
-                  fontWeight: 500,
-                }}
-              >
-                {r.type}
-              </div>
-              <div style={{ marginTop: "4px", opacity: 0.7, fontSize: "10px" }}>{r.id}</div>
-            </div>
-          </Popup>
-        </Marker>
-      ))}
+            </Popup>
+          </Marker>
+        ))}
 
       {/* Verified City Incidents */}
       {incidents.map((i) => (
         <CircleMarker
           key={i.id}
           center={[i.lat, i.lng]}
-          radius={i.priority === "critical" ? 12 : i.priority === "high" ? 10 : 8}
+          radius={i.priority === "critical" ? 16 : i.priority === "high" ? 13 : 10}
           pathOptions={{
             color: priorityColor[i.priority],
             fillColor: priorityColor[i.priority],

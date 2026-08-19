@@ -11,6 +11,7 @@ const legend: Priority[] = ["critical", "high", "moderate", "low"];
 export function EmergencyMap(props: MapProps) {
   const [mounted, setMounted] = useState(false);
   const [showFloodZones, setShowFloodZones] = useState(false);
+  const [showResources, setShowResources] = useState(true);
   const [legendOpen, setLegendOpen] = useState(false);
   useEffect(() => setMounted(true), []);
 
@@ -18,7 +19,7 @@ export function EmergencyMap(props: MapProps) {
     <div className="relative h-[360px] overflow-hidden rounded border border-border bg-card lg:h-[480px]">
       {mounted ? (
         <Suspense fallback={<MapSkeleton />}>
-          <MapClient {...props} showFloodZones={showFloodZones} />
+          <MapClient {...props} showFloodZones={showFloodZones} showResources={showResources} />
         </Suspense>
       ) : (
         <MapSkeleton />
@@ -85,7 +86,24 @@ export function EmergencyMap(props: MapProps) {
             </div>
           </div>
           <div className="my-1.5 h-px bg-border" />
-          <p className="eoc-label mb-1">Resources</p>
+          <div className="flex items-center justify-between mb-1">
+            <p className="eoc-label">Resources</p>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={showResources}
+              onClick={() => setShowResources((v) => !v)}
+              className={`pointer-events-auto relative inline-flex h-4 w-7 shrink-0 cursor-pointer items-center rounded-full border transition-colors ${
+                showResources ? "border-primary/40 bg-primary" : "border-border bg-muted"
+              }`}
+            >
+              <span
+                className={`inline-block size-3 rounded-full bg-white shadow-sm transition-transform ${
+                  showResources ? "translate-x-3" : "translate-x-0.5"
+                }`}
+              />
+            </button>
+          </div>
           <div className="flex flex-col gap-0.5">
             <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
               <span
